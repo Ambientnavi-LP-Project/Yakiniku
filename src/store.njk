@@ -5,9 +5,10 @@ pagination:
   alias: store
 permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
 ---
-{%- set desc = "All-you-can-eat wagyu yakiniku in " + store.city + ". Raised on our own farm since 1962, grilled at your table. " + store.name -%}
-{%- set canonical = stores.domain + "/" + store.region + "/" + store.slug + "/" -%}
 {#- 社内名称: {{ store.internal_name }} -#}
+{%- set desc = "All-you-can-eat wagyu yakiniku BBQ in " + store.city + ". Run by cattle farmers since 1962 — we raise our own wagyu. " + store.name -%}
+{%- set canonical = stores.domain + "/" + store.region + "/" + store.slug + "/" -%}
+{%- set reserve = store.tablecheck_url + "?utm_source=lp&utm_medium=referral" -%}
 <!doctype html>
 <html lang="en" data-store="{{ store.region }}-{{ store.slug }}">
 <head>
@@ -22,11 +23,11 @@ permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
 <meta property="og:url" content="{{ canonical }}">
 <meta property="og:image" content="{{ stores.domain }}/{{ stores.og_image }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#17130F">
+<meta name="theme-color" content="#0B0908">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=IBM+Plex+Mono:wght@400;500&family=Yellowtail&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..500;1,9..144,200..400&family=IBM+Plex+Mono:wght@400;500&family=Yellowtail&display=swap" rel="stylesheet">
 
 {%- if stores.gtm_id %}
 <script>window.dataLayer=window.dataLayer||[];(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','{{ stores.gtm_id }}');</script>
@@ -35,336 +36,380 @@ permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
 {%- endif %}
 
 <style>
-/* ============================================================
-   Farm to Table — tokens
-   paper : ロゴの生成り  /  sumi : 墨  /  seal : 落款の朱
-   tag   : 耳標の黄（アクセントは1か所だけ）
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   Farm to Table
+
+   ロゴは「生成りの紙に墨」。ページはそれを反転させ、墨を地に、
+   生成りを文字にしている。店内が炭火の暗い部屋であること、
+   料理写真が黒バックであることに合わせた反転。
+   牧場のセクションだけ生成りに戻り、昼の光になる。
+
+   ink   : 墨（地）
+   paper : ロゴの生成り（文字）
+   seal  : 落款の朱（予約導線だけに使う）
+   brass : ロースターの真鍮（罫線のみ。文字には使わない）
+   ═══════════════════════════════════════════════════════════════ */
 :root{
-  --paper:#F4EEDF; --paper-2:#EAE1CC; --paper-3:#DED2B8;
-  --sumi:#17130F;  --sumi-2:#211B15;  --sumi-3:#0E0B09;
-  --seal:#B4382C;  --tag:#E8B32C;
-  --ink-soft:#5B5044; --ash:#9C907E;
-  --rule:rgba(23,19,15,.18); --rule-d:rgba(244,238,223,.17);
+  --ink:#0B0908; --ink-2:#131010; --ink-3:#1C1714;
+  --paper:#F2EADA; --paper-2:#E7DCC6;
+  --seal:#B4382C; --seal-d:#992D22;
+  --brass:#9C8055;
+  --stone:#8B8074;
+  --hair:rgba(242,234,218,.14);
+  --hair-2:rgba(11,9,8,.16);
 
   --f-disp:"Fraunces",Georgia,"Times New Roman",serif;
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --f-script:"Yellowtail",cursive;
   --f-body:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",
-    "Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",
-    "PingFang SC","PingFang TC","Microsoft YaHei","Microsoft JhengHei",
+    "Noto Sans JP","PingFang SC","Microsoft YaHei",
     "Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 
-  --wrap:1180px;
-  --gut:clamp(20px,5vw,60px);
-  --band:clamp(74px,10vw,136px);
+  --wrap:1240px;
+  --gut:clamp(20px,5vw,64px);
+  --band:clamp(80px,11vw,168px);
+  --head:58px;
+  --dock:0px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;background:var(--paper);color:var(--sumi);
-  font-family:var(--f-body);font-size:15.5px;line-height:1.85;
-  letter-spacing:.01em;-webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  margin:0;background:var(--ink);color:var(--paper);
+  font-family:var(--f-body);font-size:15px;line-height:1.9;
+  letter-spacing:.012em;-webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 img,iframe{max-width:100%;display:block}
 a{color:inherit}
 h1,h2,h3,p,ul,ol,figure,blockquote{margin:0;padding:0}
 ul,ol{list-style:none}
-:focus-visible{outline:2px solid var(--seal);outline-offset:3px}
+::selection{background:var(--seal);color:var(--paper)}
+:focus-visible{outline:1px solid var(--paper);outline-offset:4px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 .wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gut)}
-.band{padding-block:var(--band)}
-.band--paper{background:var(--paper)}
-.band--dark{background:var(--sumi);color:var(--paper)}
+.sec{position:relative;padding-block:var(--band)}
+.sec--light{background:var(--paper);color:var(--ink)}
 
-/* ---- shared type ------------------------------------------------------ */
-.eyebrow{
-  font-family:var(--f-mono);font-size:10.5px;font-weight:500;
-  letter-spacing:.26em;text-transform:uppercase;color:var(--ash);
-  display:flex;align-items:center;gap:14px;
+/* ── 節のラベルは左の余白に縦書きで走らせる。
+      横罫＋小見出しの繰り返しを避けるための、このページ固有の構造 ── */
+.in{position:relative}
+.vlabel{display:none}
+.hlabel{
+  font-family:var(--f-mono);font-size:9.5px;font-weight:500;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--stone);
+  padding-bottom:22px;
 }
-.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
-.band--dark .eyebrow::after{background:var(--rule-d)}
+@media(min-width:1080px){
+  .in{padding-left:96px}
+  .hlabel{display:none}
+  .vlabel{
+    display:flex;align-items:center;gap:18px;
+    position:absolute;left:0;top:4px;
+    writing-mode:vertical-rl;
+    font-family:var(--f-mono);font-size:9.5px;font-weight:500;
+    letter-spacing:.38em;text-transform:uppercase;color:var(--stone);
+  }
+  .vlabel::after{content:"";width:1px;height:64px;background:var(--brass);opacity:.65}
+}
 
-.h2{
-  font-family:var(--f-disp);font-optical-sizing:auto;
-  font-weight:400;font-size:clamp(29px,4.6vw,54px);line-height:1.1;
-  letter-spacing:-.015em;margin-top:26px;max-width:20ch;
+h2.t{
+  font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
+  font-size:clamp(30px,5.2vw,62px);line-height:1.06;letter-spacing:-.028em;
+  max-width:17ch;
 }
-.lede{font-size:clamp(15.5px,1.5vw,17px);line-height:1.9;color:var(--ink-soft);max-width:56ch}
-.band--dark .lede{color:#C3B8A6}
+.lede{font-size:clamp(15px,1.5vw,16.5px);line-height:1.95;color:#BFB4A2;max-width:54ch}
+.sec--light .lede{color:#584E42}
 
-/* ============================================================ TOPBAR */
-.topbar{
-  position:fixed;inset:0 0 auto 0;z-index:60;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:16px;padding:10px var(--gut);
-  background:rgba(23,19,15,.92);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--rule-d);
-  transform:translateY(-102%);transition:transform .38s cubic-bezier(.4,0,.2,1);
-}
-.topbar.is-on{transform:translateY(0)}
-.topbar__mark{font-family:var(--f-script);font-size:22px;color:var(--paper);text-decoration:none;line-height:1;padding-block:4px}
-.topbar__nav{display:flex;align-items:center;gap:8px}
-.topbar__link{
-  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;
-  text-transform:uppercase;color:#C3B8A6;text-decoration:none;padding:8px 10px;
-}
-.topbar__link:hover{color:var(--paper)}
-@media(max-width:700px){.topbar__link{display:none}}
-
-/* ---- buttons ---------------------------------------------------------- */
+/* ── buttons ─────────────────────────────────────────────── */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:var(--f-mono);font-size:11px;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
-  padding:14px 24px;border:1px solid transparent;border-radius:1px;
-  transition:background .22s ease,color .22s ease,border-color .22s ease;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;text-decoration:none;
+  padding:17px 32px;border:1px solid transparent;
+  transition:background .25s ease,color .25s ease,border-color .25s ease;
   white-space:nowrap;cursor:pointer;
 }
-.btn--fill{background:var(--seal);color:#FBF7EE;border-color:var(--seal)}
-.btn--fill:hover{background:#9C2E24;border-color:#9C2E24}
-.btn--ghost{border-color:rgba(244,238,223,.42);color:var(--paper)}
-.btn--ghost:hover{border-color:var(--paper);background:rgba(244,238,223,.08)}
-.btn--dark{border-color:var(--rule);color:var(--sumi)}
-.btn--dark:hover{background:var(--sumi);color:var(--paper);border-color:var(--sumi)}
-.btn--sm{padding:10px 16px;font-size:10px}
+.btn--fill{background:var(--seal);color:#F7F1E6;border-color:var(--seal)}
+.btn--fill:hover{background:var(--seal-d);border-color:var(--seal-d)}
+.btn--line{border-color:rgba(242,234,218,.32);color:var(--paper)}
+.btn--line:hover{border-color:var(--paper)}
+.sec--light .btn--line{border-color:rgba(11,9,8,.3);color:var(--ink)}
+.sec--light .btn--line:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.btn--sm{padding:10px 17px;font-size:9.5px;letter-spacing:.18em}
 
-/* ============================================================ HERO */
-.hero{position:relative;min-height:calc(100svh - var(--bar,0px));display:flex;flex-direction:column;background:var(--sumi-3);overflow:hidden}
+/* ── banner ──────────────────────────────────────────────── */
+.banner{
+  position:relative;z-index:61;display:block;text-decoration:none;
+  background:var(--ink-3);color:var(--paper);text-align:center;
+  padding:10px 16px;font-family:var(--f-mono);font-size:10px;
+  letter-spacing:.2em;line-height:1.6;
+  border-bottom:1px solid var(--hair);
+}
+.banner span{border-bottom:1px solid rgba(180,56,44,.9);padding-bottom:2px}
+.banner:hover{background:var(--seal)}
+.banner:hover span{border-color:rgba(242,234,218,.6)}
+
+/* ── header ──────────────────────────────────────────────── */
+.head{
+  position:sticky;top:0;z-index:60;height:var(--head);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding-inline:var(--gut);
+  background:rgba(11,9,8,.86);backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--hair);
+}
+.head__mark{font-family:var(--f-script);font-size:24px;color:var(--paper);text-decoration:none;line-height:1;white-space:nowrap;padding-block:6px}
+.head__right{display:flex;align-items:center;gap:16px}
+
+.lang{display:flex;align-items:center}
+.lang button{
+  appearance:none;border:0;background:transparent;cursor:pointer;
+  font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.16em;
+  color:rgba(242,234,218,.5);padding:6px 0;margin-left:16px;
+  position:relative;white-space:nowrap;transition:color .2s ease;
+}
+.lang button::after{
+  content:"";position:absolute;left:0;right:0;bottom:1px;height:1px;
+  background:var(--paper);transform:scaleX(0);transform-origin:left;
+  transition:transform .25s cubic-bezier(.2,0,.2,1);
+}
+.lang button:first-child{margin-left:0}
+.lang button:hover{color:var(--paper)}
+.lang button.active{color:var(--paper)}
+.lang button.active::after{transform:scaleX(1)}
+
+@media(max-width:760px){.head__resv{display:none}}
+@media(max-width:560px){
+  .head{--head:54px;padding-inline:18px;gap:10px}
+  .head__mark{font-size:20px}
+  .lang button{margin-left:13px;font-size:10px;padding:8px 0;letter-spacing:.1em}
+}
+@media(max-width:340px){.head{padding-inline:14px}.head__mark{font-size:18px}.lang button{margin-left:10px}}
+
+/* ── hero ────────────────────────────────────────────────── */
+.hero{
+  position:relative;overflow:hidden;background:#000;
+  min-height:calc(100svh - var(--stack,96px) - var(--dock,0px));
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
 .hero__media{position:absolute;inset:0}
 .hero__shot{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:0;transition:opacity 1.5s ease;transform:scale(1.06);
-  animation:drift 22s ease-in-out infinite alternate;
+  opacity:0;transition:opacity 1.6s ease;animation:drift 26s ease-in-out infinite alternate;
 }
 .hero__shot.is-on{opacity:1}
-@keyframes drift{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.13) translate3d(-1.2%,-1.4%,0)}}
+@keyframes drift{from{transform:scale(1.03)}to{transform:scale(1.11) translate3d(-1%,-1.2%,0)}}
 .hero__scrim{
   position:absolute;inset:0;
   background:
-    radial-gradient(120% 85% at 50% 44%,rgba(14,11,9,.42) 0%,rgba(14,11,9,.78) 62%,rgba(14,11,9,.93) 100%),
-    linear-gradient(180deg,rgba(14,11,9,.72) 0%,rgba(14,11,9,0) 26%,rgba(14,11,9,0) 62%,rgba(14,11,9,.9) 100%);
+    linear-gradient(100deg,rgba(6,5,4,.92) 0%,rgba(6,5,4,.72) 38%,rgba(6,5,4,.18) 72%,rgba(6,5,4,.42) 100%),
+    linear-gradient(180deg,rgba(6,5,4,.55) 0%,rgba(6,5,4,0) 30%,rgba(6,5,4,.2) 62%,rgba(6,5,4,.88) 100%);
 }
-.hero__inner{
-  position:relative;flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;
-  padding:120px var(--gut) 40px;color:var(--paper);
-}
+.hero__in{position:relative;padding-block:calc(var(--band) * .7) 34px}
+.hero__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
 
-/* ---- wordmark (ロゴのロックアップをCSSで再現) ---- */
+/* ロゴのロックアップ（CSSで再現。透過PNGが来たら画像に差し替え可） */
 .mk{display:block;line-height:1}
 .mk__over{
-  display:block;font-family:var(--f-mono);font-size:clamp(8.5px,1.4vw,10px);font-weight:500;
-  letter-spacing:.3em;text-transform:uppercase;line-height:1.9;color:rgba(244,238,223,.72);
+  display:block;font-family:var(--f-mono);font-size:clamp(8px,1.15vw,9.5px);font-weight:500;
+  letter-spacing:.34em;text-transform:uppercase;line-height:2;color:rgba(242,234,218,.62);
 }
-.mk__cjk{font-size:clamp(9.5px,1.7vw,12px);letter-spacing:.4em;color:rgba(244,238,223,.62);line-height:1.9;margin-top:.55em}
+.mk__cjk{display:block;font-size:clamp(9px,1.3vw,10.5px);letter-spacing:.46em;color:rgba(242,234,218,.5);line-height:1.9;margin-top:.5em}
 .mk__word{
-  font-family:var(--f-script);font-weight:400;white-space:nowrap;
-  font-size:clamp(46px,8.4vw,90px);line-height:1.05;
-  margin:.06em 0 .1em;letter-spacing:-.005em;
-  text-shadow:0 2px 34px rgba(0,0,0,.55);
+  display:block;font-family:var(--f-script);font-weight:400;white-space:nowrap;
+  font-size:clamp(50px,8.6vw,104px);line-height:1;margin:.1em 0 .12em;
+  letter-spacing:-.01em;color:var(--paper);
+  text-shadow:0 4px 46px rgba(0,0,0,.6);
 }
-.mk__mid{position:relative;display:inline-block;padding-inline:.06em}
+.mk__mid{position:relative;display:inline-block;padding-inline:.05em}
 .mk__seal{
-  position:absolute;left:50%;top:50%;
-  width:.66em;height:.66em;transform:translate(-50%,-56%) rotate(1.5deg);
-  border:.045em solid var(--seal);border-radius:.03em;
+  position:absolute;left:50%;top:50%;width:.62em;height:.62em;
+  transform:translate(-50%,-46%) rotate(-1.5deg);
+  border:.035em solid var(--seal);
 }
-.mk__est{font-family:var(--f-disp);font-style:italic;font-weight:300;font-size:clamp(13px,2vw,16px);letter-spacing:.22em;color:rgba(244,238,223,.66)}
-.mk__rule{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
-.mk__rule::before,.mk__rule::after{content:"";width:clamp(28px,7vw,64px);height:1px;background:rgba(244,238,223,.3)}
+.mk__est{
+  display:block;margin-top:14px;font-family:var(--f-mono);font-size:9.5px;
+  letter-spacing:.34em;text-transform:uppercase;color:rgba(242,234,218,.44);
+}
 
-.hero__sub{
-  margin-top:30px;max-width:34ch;font-size:clamp(14.5px,1.7vw,17px);
-  line-height:1.85;color:rgba(244,238,223,.9);text-wrap:balance;
+.hero__name{
+  margin-top:30px;padding-top:24px;border-top:1px solid var(--hair);
+  max-width:44ch;font-family:var(--f-disp);font-weight:300;
+  font-size:clamp(14px,1.55vw,18px);line-height:1.55;letter-spacing:.008em;
+  color:rgba(242,234,218,.9);
 }
-.hero__cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:34px}
+.hero__cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:30px}
+.hero__note{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(242,234,218,.5)}
 
 .hero__foot{
-  position:relative;border-top:1px solid rgba(244,238,223,.18);
-  padding:14px var(--gut) calc(14px + env(safe-area-inset-bottom));
+  position:relative;margin-top:clamp(34px,6vw,70px);
+  border-top:1px solid var(--hair);
+  padding:15px var(--gut) calc(15px + env(safe-area-inset-bottom));
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;
-  text-transform:uppercase;color:rgba(244,238,223,.72);
-  background:rgba(14,11,9,.5);
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(242,234,218,.55);
 }
 .hero__foot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hero__foot .dot{color:var(--tag)}
-@media(min-width:641px){.hero__foot{padding-right:calc(var(--gut) + 258px)}}
-@media(max-width:640px){.hero__foot{font-size:9.5px;letter-spacing:.14em;padding-bottom:calc(58px + env(safe-area-inset-bottom))}.hero__foot .hide-s{display:none}}
+@media(max-width:640px){.hero__foot{font-size:9px;letter-spacing:.14em}}
 
-/* ============================================================ TRACEABILITY */
-.trace__head{max-width:62ch}
-.ledger{
-  margin-top:52px;border:1px solid var(--rule);background:rgba(255,255,255,.36);
-  display:grid;grid-template-columns:repeat(3,1fr);
+/* ── statement ───────────────────────────────────────────── */
+.say{padding-block:clamp(72px,10vw,140px);border-bottom:1px solid var(--hair)}
+.say q{
+  display:block;quotes:none;font-family:var(--f-disp);font-style:italic;font-weight:200;
+  font-size:clamp(25px,4.4vw,54px);line-height:1.2;letter-spacing:-.025em;
+  max-width:20ch;color:var(--paper);
 }
-.ledger__cell{padding:32px clamp(20px,3vw,34px) 34px;border-left:1px solid var(--rule)}
-.ledger__cell:first-child{border-left:0}
-.ledger__k{font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
-.ledger__t{font-family:var(--f-disp);font-weight:400;font-size:clamp(21px,2.6vw,27px);line-height:1.25;margin:12px 0 12px;letter-spacing:-.01em}
-.ledger__d{font-size:14px;line-height:1.85;color:var(--ink-soft)}
-@media(max-width:820px){
-  .ledger{grid-template-columns:1fr}
-  .ledger__cell{border-left:0;border-top:1px solid var(--rule)}
-  .ledger__cell:first-child{border-top:0}
-}
+.say__by{margin-top:26px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--stone)}
 
-/* 耳標チップ — 黄色を使うのはページ中このひとつだけ */
-.eartag{display:inline-flex;align-items:stretch;margin-top:26px;border:1px solid var(--rule);background:#fff}
-.eartag__tab{
-  display:flex;align-items:center;gap:8px;background:var(--tag);
-  padding:9px 14px;font-family:var(--f-mono);font-size:10px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;color:#2A2115;
+/* ── story（牧場：ここだけ昼の光にする） ──────────────────── */
+.story__lead{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(30px,4vw,58px)}
+@media(min-width:900px){.story__lead{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:end}}
+.story__p{margin-top:22px;font-size:15px;line-height:2.05;color:#584E42;max-width:54ch}
+.story__q{
+  margin:clamp(46px,6vw,86px) 0 0;font-family:var(--f-disp);font-style:italic;font-weight:200;
+  font-size:clamp(24px,3.8vw,46px);line-height:1.25;letter-spacing:-.022em;color:var(--ink);max-width:19ch;
 }
-.eartag__tab::before{content:"";width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(42,33,21,.55)}
-.eartag__val{display:flex;align-items:center;padding:9px 16px;font-family:var(--f-mono);font-size:11px;color:var(--ink-soft);letter-spacing:.03em}
-@media(max-width:520px){
-  .eartag{flex-direction:column}
-  .eartag__val{padding:10px 14px;border-top:1px solid var(--rule)}
+.story__q::before{content:"";display:block;width:46px;height:1px;background:var(--seal);margin-bottom:24px}
+
+/* 全幅の写真。左右のガターを突き抜けさせる */
+.bleed{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-block:clamp(48px,7vw,104px)}
+.bleed img{width:100%;height:clamp(230px,42vw,560px);object-fit:cover}
+.bleed figcaption{
+  max-width:var(--wrap);margin:14px auto 0;padding-inline:var(--gut);
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:#8B8074;
 }
 
-/* ============================================================ STORY */
-.story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(34px,5vw,72px);align-items:center}
-.story__figure{position:relative;margin-left:calc(var(--gut) * -1)}
-.story__figure img{width:100%;aspect-ratio:4/3.1;object-fit:cover;filter:saturate(.86) contrast(1.03)}
-.story__cap{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--ash);margin-top:12px;padding-left:2px;
-}
-.story__body{padding-block:6px}
-.story__p{margin-top:20px;font-size:15.5px;line-height:1.95;color:var(--ink-soft)}
-.story__quote{
-  margin-top:34px;padding-left:22px;border-left:2px solid var(--seal);
-  font-family:var(--f-disp);font-style:italic;font-weight:300;
-  font-size:clamp(19px,2.5vw,26px);line-height:1.45;letter-spacing:-.01em;color:var(--sumi);
-}
-@media(max-width:900px){
-  .story{grid-template-columns:1fr}
-  .story__figure{margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1)}
-}
+/* ── strengths（カードにしない。写真の横に垂れ下がる定義リスト） ── */
+.str{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(34px,5vw,72px)}
+@media(min-width:960px){.str{grid-template-columns:minmax(0,.78fr) minmax(0,1fr);align-items:start}}
+.str__fig img{width:100%;aspect-ratio:4/4.5;object-fit:cover}
+.str__list{border-top:1px solid var(--hair-2)}
+.str__row{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:26px 0;border-bottom:1px solid var(--hair-2)}
+@media(min-width:620px){.str__row{grid-template-columns:150px minmax(0,1fr);gap:28px;align-items:baseline}}
+.str__k{font-family:var(--f-mono);font-size:9.5px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:#8B8074}
+.str__t{font-family:var(--f-disp);font-weight:300;font-size:clamp(21px,2.6vw,29px);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+.str__d{margin-top:8px;font-size:14px;line-height:1.95;color:#584E42;max-width:44ch}
 
-/* ============================================================ COURSES (肉の品書き) */
-.board{margin-top:48px;border-top:1px solid var(--rule-d)}
-.board__row{padding:30px 0 32px;border-bottom:1px solid var(--rule-d)}
-.board__row.is-featured{padding-left:clamp(14px,2vw,26px);border-left:2px solid var(--seal);background:linear-gradient(90deg,rgba(180,56,44,.09),rgba(180,56,44,0) 46%)}
-.board__head{display:flex;align-items:flex-end;gap:0}
-.board__name{font-family:var(--f-disp);font-weight:400;font-size:clamp(23px,3.2vw,34px);line-height:1.1;letter-spacing:-.015em}
-.board__lead{
-  flex:1;min-width:24px;height:8px;align-self:flex-end;margin:0 14px 7px;
-  background-image:radial-gradient(circle,rgba(244,238,223,.42) 1px,transparent 1.3px);
-  background-size:7px 8px;background-repeat:repeat-x;background-position:0 bottom;
+/* ── courses ─────────────────────────────────────────────── */
+.board{margin-top:clamp(38px,5vw,64px);border-top:1px solid var(--hair)}
+.board__row{padding:32px 0 34px;border-bottom:1px solid var(--hair);transition:background .3s ease}
+.board__row.is-featured{position:relative}
+.board__row.is-featured::before{
+  content:"";position:absolute;left:calc(var(--gut) * -1);top:-1px;bottom:-1px;width:2px;background:var(--seal);
 }
-.board__price{font-family:var(--f-mono);font-size:clamp(19px,2.6vw,25px);line-height:1;white-space:nowrap}
-.board__per{display:block;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin-top:8px;text-align:right}
-.board__meta{margin-top:12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:#AFA492}
-.board__items{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 10px;max-width:74ch}
-.board__items li{font-size:13.5px;color:#C3B8A6;line-height:1.7}
-.board__items li:not(:last-child)::after{content:"·";margin-left:10px;color:var(--ash)}
+@media(min-width:1080px){.board__row.is-featured::before{left:-40px}}
+.board__head{display:flex;align-items:baseline;gap:0}
+.board__name{font-family:var(--f-disp);font-weight:300;font-size:clamp(24px,3.4vw,38px);line-height:1.1;letter-spacing:-.024em}
+.board__lead{flex:1;min-width:24px;height:1px;margin:0 20px 8px;background:var(--hair)}
+.board__price{font-family:var(--f-mono);font-size:clamp(17px,2.1vw,21px);line-height:1;white-space:nowrap;letter-spacing:.02em}
+.board__per{display:block;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--stone);margin-top:9px;text-align:right}
+.board__meta{margin-top:12px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;color:#9A8F7E}
+.board__items{margin-top:16px;display:flex;flex-wrap:wrap;gap:5px 9px;max-width:72ch}
+.board__items li{font-size:13.5px;color:#BFB4A2;line-height:1.7}
+.board__items li:not(:last-child)::after{content:"/";margin-left:9px;color:rgba(242,234,218,.25)}
 @media(max-width:600px){
   .board__head{flex-wrap:wrap}
   .board__lead{display:none}
-  .board__price{width:100%;margin-top:10px;font-size:22px}
+  .board__price{width:100%;margin-top:12px;font-size:19px}
   .board__per{text-align:left}
 }
-
-.drinks{
-  margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;
-  border:1px dashed var(--rule-d);padding:18px 22px;
-}
-.drinks__k{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--tag)}
-.drinks__n{font-size:14.5px;color:var(--paper)}
+.drinks{margin-top:32px;display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 22px;padding-top:6px}
+.drinks__k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
+.drinks__n{font-size:14.5px}
 .drinks__p{font-family:var(--f-mono);font-size:15px;margin-left:auto;white-space:nowrap}
-.drinks__note{flex-basis:100%;font-size:12.5px;color:var(--ash);line-height:1.7}
-.menu__note{margin-top:26px;font-size:12.5px;color:var(--ash);line-height:1.8;max-width:62ch}
+.drinks__note{flex-basis:100%;font-size:12.5px;color:var(--stone);line-height:1.75}
+.note{margin-top:28px;font-size:12.5px;color:var(--stone);line-height:1.85;max-width:58ch}
+.after{margin-top:clamp(38px,5vw,58px);display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}
+.after p{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone)}
 
-/* ============================================================ GALLERY */
-.grid{margin-top:48px;display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(10px,1.4vw,18px)}
-.shot{position:relative;overflow:hidden;background:var(--paper-3)}
-.shot img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,0,.2,1)}
-.shot:hover img{transform:scale(1.04)}
-.shot__cap{
-  position:absolute;left:0;bottom:0;padding:8px 12px;
-  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--paper);background:rgba(14,11,9,.62);backdrop-filter:blur(3px);
+/* ── reservation ─────────────────────────────────────────── */
+.resv{position:relative;overflow:hidden;background:var(--ink-2);border-block:1px solid var(--hair)}
+.resv__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.2;filter:saturate(.7)}
+.resv__scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,9,8,.96) 0%,rgba(11,9,8,.82) 52%,rgba(11,9,8,.6) 100%)}
+.resv__in{position:relative;padding-block:clamp(74px,9vw,124px)}
+.resv__t{font-family:var(--f-disp);font-weight:300;font-size:clamp(28px,4.6vw,54px);line-height:1.08;letter-spacing:-.028em;margin-top:22px;max-width:14ch}
+.resv__d{margin-top:20px;max-width:42ch;font-size:15px;line-height:1.95;color:#BFB4A2}
+.resv__cta{margin-top:34px;display:flex;flex-wrap:wrap;gap:14px}
+.resv__tel{margin-top:24px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--stone)}
+.resv__tel a{color:var(--paper);text-decoration:none;border-bottom:1px solid rgba(242,234,218,.3)}
+
+/* ── gallery ─────────────────────────────────────────────── */
+.grid{margin-top:clamp(38px,5vw,60px);display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(10px,1.2vw,16px)}
+.shot{position:relative;overflow:hidden;background:var(--ink-3)}
+.shot img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,0,.2,1)}
+.shot:hover img{transform:scale(1.045)}
+.shot figcaption{
+  position:absolute;left:14px;bottom:12px;
+  font-family:var(--f-mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--paper);text-shadow:0 1px 12px rgba(0,0,0,.9);
 }
-.shot:nth-child(1){grid-column:span 5;aspect-ratio:4/5}
-.shot:nth-child(2){grid-column:span 7;aspect-ratio:4/3}
-.shot:nth-child(3){grid-column:span 7;aspect-ratio:16/10}
-.shot:nth-child(4){grid-column:span 5;aspect-ratio:1/1}
+.shot:nth-child(1){grid-column:span 7;aspect-ratio:4/2.9}
+.shot:nth-child(2){grid-column:span 5;aspect-ratio:4/4.6}
+.shot:nth-child(3){grid-column:span 5;aspect-ratio:1/1}
+.shot:nth-child(4){grid-column:span 7;aspect-ratio:4/2.9}
 .shot:nth-child(n+5){grid-column:span 6;aspect-ratio:3/2}
 @media(max-width:760px){
   .grid{grid-template-columns:1fr}
   .shot:nth-child(n){grid-column:span 1;aspect-ratio:4/3}
 }
 
-/* ============================================================ ACCESS */
-.access{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(34px,5vw,66px);align-items:start}
-.rows{margin-top:38px;border-top:1px solid var(--rule-d)}
-.rows__r{display:grid;grid-template-columns:118px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule-d)}
-.rows__k{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);padding-top:4px}
-.rows__v{font-size:14.5px;line-height:1.8;color:var(--paper)}
-.rows__v a{color:var(--paper);text-decoration:none;border-bottom:1px solid rgba(244,238,223,.35)}
+/* ── access ──────────────────────────────────────────────── */
+.acc{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(34px,5vw,64px);align-items:start}
+@media(min-width:940px){.acc{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.acc--solo{grid-template-columns:minmax(0,1fr)!important;max-width:720px}
+.rows{margin-top:clamp(30px,4vw,48px);border-top:1px solid var(--hair)}
+.rows__r{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;padding:17px 0;border-bottom:1px solid var(--hair)}
+@media(min-width:520px){.rows__r{grid-template-columns:112px minmax(0,1fr);gap:20px}}
+.rows__k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--stone);padding-top:5px}
+.rows__v{font-size:14.5px;line-height:1.8}
+.rows__v a{text-decoration:none;border-bottom:1px solid rgba(242,234,218,.3)}
 .rows__v a:hover{border-color:var(--paper)}
-.rows__v small{display:block;font-size:12.5px;color:var(--ash);margin-top:2px}
-@media(max-width:560px){.rows__r{grid-template-columns:1fr;gap:4px}}
-.access__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.map{width:100%;aspect-ratio:4/3.4;border:1px solid var(--rule-d);filter:grayscale(1) contrast(.95) brightness(.92);transition:filter .4s ease}
-.map:hover{filter:grayscale(0) contrast(1) brightness(1)}
-.access--solo{grid-template-columns:minmax(0,1fr)!important;max-width:760px}
-@media(max-width:900px){.access{grid-template-columns:1fr}.map{aspect-ratio:4/3}}
+.rows__v small{display:block;font-size:12.5px;color:var(--stone);margin-top:2px}
+.acc__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.map{width:100%;aspect-ratio:1/1;border:1px solid var(--hair);filter:grayscale(1) invert(.92) contrast(.85);transition:filter .5s ease}
+.map:hover{filter:none}
+@media(max-width:940px){.map{aspect-ratio:4/3}}
+.stars{display:flex;align-items:baseline;gap:12px;margin-top:26px;font-family:var(--f-mono);font-size:11px}
+.stars__n{font-size:19px;letter-spacing:.02em}
+.stars__s{color:var(--brass);letter-spacing:.14em}
+.stars a{color:var(--stone);text-decoration:none}
+.stars a:hover{color:var(--paper)}
 
-.stars{display:flex;align-items:center;gap:12px;margin-top:26px;font-family:var(--f-mono);font-size:12px;color:var(--paper)}
-.stars__n{font-size:19px}
-.stars__s{color:var(--tag);letter-spacing:.1em}
-.stars a{color:var(--ash);text-decoration:none;border-bottom:1px solid transparent}
-.stars a:hover{color:var(--paper);border-color:var(--rule-d)}
-
-/* ============================================================ FOOTER */
-.foot{background:var(--sumi-3);color:var(--paper);padding:64px 0 92px;border-top:1px solid var(--rule-d)}
-.foot__top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:26px}
-.foot__mark{font-family:var(--f-script);font-size:38px;line-height:1}
-.foot__note{font-family:var(--f-disp);font-style:italic;font-weight:300;font-size:16px;color:#B7AC9A;max-width:30ch}
-.foot__links{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:38px;padding-top:26px;border-top:1px solid var(--rule-d)}
+/* ── footer ──────────────────────────────────────────────── */
+.foot{border-top:1px solid var(--hair);padding:clamp(52px,6vw,76px) 0 44px}
+.foot__mark{font-family:var(--f-script);font-size:34px;line-height:1;color:var(--paper)}
+.foot__links{display:flex;flex-wrap:wrap;gap:0 30px;margin-top:34px;padding-top:26px;border-top:1px solid var(--hair)}
 .foot__a{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  color:#B7AC9A;text-decoration:none;padding:10px 14px;border:1px solid var(--rule-d);
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--stone);text-decoration:none;padding-block:9px;
+  border-bottom:1px solid transparent;transition:color .2s ease,border-color .2s ease;
 }
-.foot__a:hover{color:var(--paper);border-color:rgba(244,238,223,.42)}
-.foot__legal{margin-top:30px;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:#6E6558;line-height:2}
-.foot__name{display:block;max-width:60ch;text-transform:none;letter-spacing:.04em}
+.foot__a:hover{color:var(--paper);border-color:var(--hair)}
+.foot__legal{margin-top:30px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:#5C554B;line-height:2.1}
+.foot__name{display:block;max-width:64ch;text-transform:none;letter-spacing:.05em;margin-bottom:6px}
 
-/* ============================================================ LANG */
-/* 既存 halal-wagyu-burger と同じ「右下・常時表示のピル」方式 */
-.lang-switcher{
-  position:fixed;right:12px;bottom:12px;z-index:200;
-  display:flex;align-items:center;gap:2px;padding:4px;border-radius:100px;
-  border:1px solid rgba(232,179,44,.5);background:rgba(14,11,9,.86);
-  backdrop-filter:blur(12px);box-shadow:0 3px 18px rgba(0,0,0,.32);
+/* ── mobile dock ─────────────────────────────────────────── */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:65;display:none;
+  padding-bottom:env(safe-area-inset-bottom);
+  border-top:1px solid rgba(242,234,218,.2);
+  box-shadow:0 -10px 30px rgba(0,0,0,.4);
 }
-.lang-switcher button{
-  appearance:none;border:0;cursor:pointer;background:transparent;
-  color:rgba(244,238,223,.62);font-family:var(--f-mono);font-size:10.5px;
-  letter-spacing:.06em;padding:6px 10px;border-radius:100px;
-  transition:background .2s ease,color .2s ease;white-space:nowrap;
+.dock a{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;text-decoration:none;padding:17px 8px;
 }
-.lang-switcher button:hover{color:var(--paper)}
-.lang-switcher button.active{background:var(--tag);color:#2A2115}
-@media(max-width:420px){.lang-switcher button{padding:6px 7px;font-size:10px}}
-
-/* ============================================================ BANNER */
-.banner{
-  background:var(--seal);color:#FBF7EE;text-align:center;
-  padding:10px 16px;font-family:var(--f-mono);font-size:10.5px;
-  letter-spacing:.14em;line-height:1.6;
+.dock__r{background:var(--seal);color:#F7F1E6}
+.dock__t{background:var(--ink-3);color:var(--paper);flex:0 0 33%;border-left:1px solid rgba(242,234,218,.16)}
+@media(max-width:760px){
+  :root{--dock:55px}
+  .dock{display:flex}
+  .foot{padding-bottom:100px}
 }
 
-/* ============================================================ MOTION */
-.rise{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,0,.2,1),transform .8s cubic-bezier(.2,0,.2,1)}
+/* ── motion ──────────────────────────────────────────────── */
+.rise{opacity:0;transform:translateY(20px);transition:opacity .9s cubic-bezier(.2,0,.2,1),transform .9s cubic-bezier(.2,0,.2,1)}
 .rise.is-in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
@@ -372,30 +417,36 @@ ul,ol{list-style:none}
 }
 </style>
 </head>
-<body{% if store.banner %} style="--bar:38px"{% endif %}>
+<body>
 {%- if stores.gtm_id %}
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ stores.gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {%- endif %}
 
 {%- if store.banner %}
-<div class="banner">{{ store.banner }}</div>
+{%- if store.tablecheck_url %}
+<a class="banner" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click"><span data-i18n="banner">{{ store.banner }}</span></a>
+{%- else %}
+<a class="banner" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click"><span data-i18n="banner">{{ store.banner }}</span></a>
+{%- endif %}
 {%- endif %}
 
-<!-- ============================================================ TOPBAR -->
-<header class="topbar" id="topbar">
-  <a class="topbar__mark" href="#top">Farm to Table</a>
-  <nav class="topbar__nav">
-    {%- if store.courses.length %}<a class="topbar__link" href="#menu" data-i18n="nav_menu">Menu</a>{% endif %}
-    <a class="topbar__link" href="#access" data-i18n="nav_access">Access</a>
+<header class="head">
+  <a class="head__mark" href="#top">Farm to Table</a>
+  <div class="head__right">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="zh">中文</button>
+      <button type="button" data-lang="ko">한국어</button>
+    </div>
     {%- if store.tablecheck_url %}
-    <a class="btn btn--fill btn--sm" href="{{ store.tablecheck_url }}?utm_source=lp&utm_medium=referral" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve a table</a>
+    <a class="btn btn--fill btn--sm head__resv" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve</a>
     {%- else %}
-    <a class="btn btn--fill btn--sm" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call to reserve</a>
+    <a class="btn btn--fill btn--sm head__resv" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call</a>
     {%- endif %}
-  </nav>
+  </div>
 </header>
 
-<!-- ============================================================ HERO -->
+<!-- ══════════════════════════════════════════ HERO -->
 <section class="hero" id="top">
   <div class="hero__media" aria-hidden="true">
     {%- for photo in store.hero_photos %}
@@ -404,238 +455,309 @@ ul,ol{list-style:none}
   </div>
   <div class="hero__scrim" aria-hidden="true"></div>
 
-  <div class="hero__inner">
-    <h1 class="mk">
-      <span class="sr">{{ store.name }}</span>
-      <span aria-hidden="true">
-        <span class="mk__over">All-you-can-eat wagyu BBQ<br>by cattle farmers</span>
-        <span class="mk__cjk" style="display:block">畜牧农场主经营的和牛烤肉自助</span>
-        <span class="mk__word" style="display:block">Farm<span class="mk__mid"><span class="mk__seal"></span>to</span>Table</span>
-        <span class="mk__cjk" style="display:block">畜産農家の和牛焼肉食べ放題</span>
-        <span class="mk__rule"><span class="mk__est">est. 1962</span></span>
-      </span>
-    </h1>
+  <div class="hero__in wrap">
+    <p class="mk" aria-hidden="true">
+      <span class="mk__over">All-you-can-eat wagyu BBQ<br>by cattle farmers</span>
+      <span class="mk__cjk">畜牧农场主经营的和牛烤肉自助</span>
+      <span class="mk__word">Farm<span class="mk__mid"><span class="mk__seal"></span>to</span>Table</span>
+      <span class="mk__cjk">畜産農家の和牛焼肉食べ放題</span>
+      <span class="mk__est">est. 1962</span>
+    </p>
 
-    <p class="hero__sub" data-i18n="hero_sub">Sixty years in wagyu. Now we raise it ourselves — and you can eat as much as you like.</p>
+    <h1 class="hero__name">{{ store.name }}</h1>
 
     <div class="hero__cta">
       {%- if store.tablecheck_url %}
-      <a class="btn btn--fill" href="{{ store.tablecheck_url }}?utm_source=lp&utm_medium=referral" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve a table</a>
+      <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+      <p class="hero__note" data-i18n="resv_note">Reservations recommended</p>
       {%- else %}
-      <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call to reserve</a>
+      <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
       {%- endif %}
       {%- if store.maps_link %}
-      <a class="btn btn--ghost" href="{{ store.maps_link }}" target="_blank" rel="noopener" data-ga-event="map_click" data-i18n="cta_directions">Get directions</a>
+      <a class="btn btn--line" href="{{ store.maps_link }}" target="_blank" rel="noopener" data-ga-event="map_click" data-i18n="cta_directions">Get directions</a>
       {%- endif %}
     </div>
   </div>
 
   <div class="hero__foot">
     <span>{{ store.area_label }}</span>
-    {%- if store.hours %}<span class="hide-s">{{ store.hours }}{% if store.hours_note %} <span class="dot">·</span> {{ store.hours_note }}{% endif %}</span>{% endif %}
+    {%- if store.hours %}<span>{{ store.hours }}</span>{% endif %}
   </div>
 </section>
 
-<!-- ============================================================ TRACEABILITY -->
-{%- if store.traceability %}
-<section class="band band--paper">
+<!-- ══════════════════════════════════════════ STATEMENT -->
+<section class="say">
   <div class="wrap">
-    <div class="trace__head rise">
-      <p class="eyebrow"><span data-i18n="trace_eyebrow">Traceability</span></p>
-      <h2 class="h2" data-i18n="trace_title">We don't just buy the wagyu. We raise it.</h2>
-    </div>
-
-    <div class="ledger rise">
-      <div class="ledger__cell">
-        <p class="ledger__k" data-i18n="trace_1_k">Three generations</p>
-        <p class="ledger__t" data-i18n="trace_1_t">Est. 1962</p>
-        <p class="ledger__d" data-i18n="trace_1_d">Our founder began as a wagyu trader, walking Japan's cattle country to choose beef with his own eyes.</p>
-      </div>
-      <div class="ledger__cell">
-        <p class="ledger__k" data-i18n="trace_2_k">Raised by us</p>
-        <p class="ledger__t" data-i18n="trace_2_t">Our own farm</p>
-        <p class="ledger__d" data-i18n="trace_2_d">Buying was never enough. Today we raise wagyu ourselves, one animal at a time.</p>
-      </div>
-      <div class="ledger__cell">
-        <p class="ledger__k" data-i18n="trace_3_k">One cow, every cut</p>
-        <p class="ledger__t" data-i18n="trace_3_t">Whole carcass</p>
-        <p class="ledger__d" data-i18n="trace_3_d">We take the whole animal, so rare cuts reach your table instead of the wholesale market.</p>
-      </div>
-    </div>
-
-    <div class="rise">
-      <p class="eartag">
-        <span class="eartag__tab" data-i18n="trace_tag_label">Individual ID</span>
-        <span class="eartag__val" data-i18n="trace_tag_value">Ask your server for today's number</span>
-      </p>
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="say_label">Since 1962</span></p>
+      <p class="hlabel" data-i18n="say_label">Since 1962</p>
+      <q data-i18n="say_quote">We want you to enjoy truly delicious wagyu to your heart's content.</q>
+      <p class="say__by" data-i18n="say_by">Farm to Table — cattle farmers since 1962</p>
     </div>
   </div>
 </section>
-{%- endif %}
 
-<!-- ============================================================ STORY -->
-<section class="band band--paper" style="padding-top:0">
+<!-- ══════════════════════════════════════════ STORY（牧場・昼の光） -->
+<section class="sec sec--light" id="story">
   <div class="wrap">
-    <div class="story">
-      <figure class="story__figure rise">
-        <img src="/{{ store.farm_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
-        <figcaption class="story__cap" data-i18n="story_caption">Our herd, at feed</figcaption>
-      </figure>
-      <div class="story__body rise">
-        <p class="eyebrow"><span data-i18n="story_eyebrow">Since 1962</span></p>
-        <h2 class="h2" data-i18n="story_title">From the farm, to your table.</h2>
-        <p class="story__p" data-i18n="story_p1">In 1962 our founder set out across Japan's cattle country, meeting farmers one by one and choosing wagyu with his own eyes. That eye was handed down — through wholesale, through the butcher's counter, and finally into a restaurant of our own.</p>
-        <p class="story__p" data-i18n="story_p2">But buying good beef was never enough. To serve wagyu we could truly stand behind, we had to raise it ourselves. So we did.</p>
-        <blockquote class="story__quote" data-i18n="story_quote">We wanted to serve better wagyu than anyone could buy.</blockquote>
-        <p class="story__p" data-i18n="story_p3">Sixty years of relationships, a trained eye, and a herd of our own — put together so you can eat wagyu until you are full, not until the bill says stop.</p>
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="story_label">Our story</span></p>
+      <p class="hlabel" data-i18n="story_label">Our story</p>
+      <div class="story__lead">
+        <h2 class="t" data-i18n="story_title">1962. Our history began with a single wagyu trader.</h2>
+        <div>
+          <p class="story__p" data-i18n="story_p1">The founder travelled the country to visit producers, looked at the cattle with his own eyes, and kept choosing only truly good wagyu. That belief was handed down, expanding into meat wholesale, a butcher shop, and then a yakiniku restaurant.</p>
+          <p class="story__p" data-i18n="story_p2">But buying alone did not satisfy us.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <figure class="bleed rise">
+    <img src="/{{ store.farm_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
+    <figcaption data-i18n="story_caption">Our own farm</figcaption>
+  </figure>
+
+  <div class="wrap">
+    <div class="in rise">
+      <blockquote class="story__q" data-i18n="story_quote">We want to deliver more delicious wagyu.</blockquote>
+      <div class="story__lead" style="margin-top:clamp(38px,5vw,64px)">
+        <div></div>
+        <div>
+          <p class="story__p" style="margin-top:0" data-i18n="story_p3">Our answer was to raise wagyu ourselves. We took on production, caring for each animal, in pursuit of wagyu we can genuinely stand behind.</p>
+          <p class="story__p" data-i18n="story_p4">And there was one more thing we wanted to make happen: we want you to enjoy truly delicious wagyu to your heart's content. So we drew on the eye for quality cultivated over more than 60 years, our relationships with producers, and the strength of raising our own wagyu, and created an all-you-can-eat brand where you can savour wagyu to the full.</p>
+          <p class="story__p" data-i18n="story_p5">Wagyu, closer to everyone. We put the dedication of our producers and more than 60 years of craft into every plate.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================ COURSES -->
+<!-- ══════════════════════════════════════════ STRENGTHS -->
+<section class="sec sec--light" style="padding-top:0">
+  <div class="wrap">
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="str_label">Our strengths</span></p>
+      <p class="hlabel" data-i18n="str_label">Our strengths</p>
+      <div class="str">
+        <figure class="str__fig">
+          <img src="/{{ store.farmer_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
+        </figure>
+        <div>
+          <h2 class="t" style="margin-bottom:clamp(30px,4vw,52px)" data-i18n="str_title">A yakiniku restaurant run by cattle farmers.</h2>
+          <div class="str__list">
+            <div class="str__row">
+              <p class="str__k" data-i18n="str_1_k">Over 60 years</p>
+              <div>
+                <p class="str__t" data-i18n="str_1_t">An eye for quality</p>
+                <p class="str__d" data-i18n="str_1_d">Cultivated since 1962 and handed down through the trade.</p>
+              </div>
+            </div>
+            <div class="str__row">
+              <p class="str__k" data-i18n="str_2_k">Producers</p>
+              <div>
+                <p class="str__t" data-i18n="str_2_t">Relationships of trust</p>
+                <p class="str__d" data-i18n="str_2_d">Built by visiting farms across the country, one producer at a time.</p>
+              </div>
+            </div>
+            <div class="str__row">
+              <p class="str__k" data-i18n="str_3_k">Our own farm</p>
+              <div>
+                <p class="str__t" data-i18n="str_3_t">We raise it ourselves</p>
+                <p class="str__d" data-i18n="str_3_d">From raising to serving, in our own hands — caring for each animal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ COURSES -->
 {%- if store.courses.length %}
-<section class="band band--dark" id="menu">
+<section class="sec" id="menu">
   <div class="wrap">
-    <div class="rise">
-      <p class="eyebrow"><span data-i18n="menu_eyebrow">All you can eat</span></p>
-      <h2 class="h2" data-i18n="menu_title">Three ways to eat wagyu.</h2>
-    </div>
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="menu_label">All you can eat</span></p>
+      <p class="hlabel" data-i18n="menu_label">All you can eat</p>
+      <h2 class="t" data-i18n="menu_title">Courses</h2>
 
-    <ol class="board rise">
-      {%- for c in store.courses %}
-      <li class="board__row{% if c.featured %} is-featured{% endif %}">
-        <div class="board__head">
-          <h3 class="board__name">{{ c.name }}</h3>
-          <span class="board__lead" aria-hidden="true"></span>
-          <p class="board__price">{{ c.price }}<small class="board__per" data-i18n="menu_per">per person</small></p>
-        </div>
-        <p class="board__meta">{{ c.name_jp }}{% if c.duration %} &nbsp;·&nbsp; {{ c.duration }}{% endif %}</p>
-        {%- if c.items.length %}
-        <ul class="board__items">
-          {%- for i in c.items %}<li>{{ i }}</li>{% endfor %}
-        </ul>
-        {%- endif %}
-      </li>
-      {%- endfor %}
-    </ol>
-
-    {%- if store.drinks %}
-    <div class="drinks rise">
-      <span class="drinks__k" data-i18n="menu_drinks">Add free-flow drinks</span>
-      <span class="drinks__n">{{ store.drinks.name_jp }}{% if store.drinks.duration %} · {{ store.drinks.duration }}{% endif %}</span>
-      <span class="drinks__p">{{ store.drinks.price }}</span>
-      {%- if store.drinks.note %}<span class="drinks__note">{{ store.drinks.note }}</span>{% endif %}
-    </div>
-    {%- endif %}
-
-    <p class="menu__note rise" data-i18n="menu_note">Menu and prices may change without notice. Please tell our staff about any allergies.</p>
-  </div>
-</section>
-{%- endif %}
-
-<!-- ============================================================ GALLERY -->
-{%- if store.gallery.length %}
-<section class="band band--paper">
-  <div class="wrap">
-    <div class="rise">
-      <p class="eyebrow"><span data-i18n="gallery_eyebrow">The room</span></p>
-      <h2 class="h2" data-i18n="gallery_title">A grill at every table.</h2>
-    </div>
-    <div class="grid rise">
-      {%- for g in store.gallery %}
-      <figure class="shot">
-        <img src="/{{ g.src }}" alt="{{ store.name_short }} — {{ g.caption }}" loading="lazy" decoding="async">
-        {%- if g.caption %}<figcaption class="shot__cap">{{ g.caption }}</figcaption>{% endif %}
-      </figure>
-      {%- endfor %}
-    </div>
-  </div>
-</section>
-{%- endif %}
-
-<!-- ============================================================ ACCESS -->
-<section class="band band--dark" id="access">
-  <div class="wrap">
-    <div class="access{% if not store.maps_embed %} access--solo{% endif %}">
-      <div class="rise">
-        <p class="eyebrow"><span data-i18n="access_eyebrow">Access</span></p>
-        <h2 class="h2"><span data-i18n="access_title">Find us in</span> {{ store.city }}.</h2>
-
-        <div class="rows">
-          {%- if store.address_en %}
-          <div class="rows__r">
-            <span class="rows__k" data-i18n="lbl_address">Address</span>
-            <span class="rows__v">{{ store.address_en }}</span>
+      <ol class="board">
+        {%- for c in store.courses %}
+        <li class="board__row{% if c.featured %} is-featured{% endif %}">
+          <div class="board__head">
+            <h3 class="board__name">{{ c.name }}</h3>
+            <span class="board__lead" aria-hidden="true"></span>
+            <p class="board__price">{{ c.price }}<small class="board__per" data-i18n="menu_per">per person</small></p>
           </div>
+          {%- if c.name_jp or c.duration %}
+          <p class="board__meta">{{ c.name_jp }}{% if c.name_jp and c.duration %} &nbsp;/&nbsp; {% endif %}{{ c.duration }}</p>
           {%- endif %}
-          {%- if store.station_en %}
-          <div class="rows__r">
-            <span class="rows__k" data-i18n="lbl_access">Nearest station</span>
-            <span class="rows__v">{{ store.station_en }}{% if store.station_note %}<small>{{ store.station_note }}</small>{% endif %}</span>
-          </div>
+          {%- if c.items.length %}
+          <ul class="board__items">
+            {%- for i in c.items %}<li>{{ i }}</li>{% endfor %}
+          </ul>
           {%- endif %}
-          {%- if store.hours %}
-          <div class="rows__r">
-            <span class="rows__k" data-i18n="lbl_hours">Hours</span>
-            <span class="rows__v">{{ store.hours }}{% if store.hours_note or store.hours_special %}<small>{{ store.hours_note }}{% if store.hours_special %} · {{ store.hours_special }}{% endif %}</small>{% endif %}</span>
-          </div>
-          {%- endif %}
-          {%- if store.tel_display %}
-          <div class="rows__r">
-            <span class="rows__k" data-i18n="lbl_tel">Phone</span>
-            <span class="rows__v"><a href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click">{{ store.tel_display }}</a></span>
-          </div>
-          {%- endif %}
-          {%- if store.seats %}
-          <div class="rows__r">
-            <span class="rows__k" data-i18n="lbl_seats">Seats</span>
-            <span class="rows__v">{{ store.seats }}</span>
-          </div>
-          {%- endif %}
-        </div>
+        </li>
+        {%- endfor %}
+      </ol>
 
-        {%- if store.google_rating %}
-        <p class="stars">
-          <span class="stars__n">{{ store.google_rating }}</span>
-          <span class="stars__s" aria-hidden="true">★★★★★</span>
-          {%- if store.google_reviews_url %}
-          <a href="{{ store.google_reviews_url }}" target="_blank" rel="noopener" data-ga-event="outbound_click"><span data-i18n="reviews_label">Google rating</span>{% if store.google_count %} ({{ store.google_count }}){% endif %}</a>
-          {%- endif %}
-        </p>
-        {%- endif %}
-
-        <div class="access__cta">
-          {%- if store.tablecheck_url %}
-          <a class="btn btn--fill" href="{{ store.tablecheck_url }}?utm_source=lp&utm_medium=referral" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve a table</a>
-          {%- else %}
-          <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call to reserve</a>
-          {%- endif %}
-          {%- if store.maps_link %}
-          <a class="btn btn--ghost" href="{{ store.maps_link }}" target="_blank" rel="noopener" data-ga-event="map_click" data-i18n="cta_directions">Get directions</a>
-          {%- endif %}
-        </div>
+      {%- if store.drinks %}
+      <div class="drinks">
+        <span class="drinks__k" data-i18n="menu_drinks">Free-flow drinks</span>
+        <span class="drinks__n">{{ store.drinks.name_jp }}{% if store.drinks.duration %} / {{ store.drinks.duration }}{% endif %}</span>
+        <span class="drinks__p">{{ store.drinks.price }}</span>
+        {%- if store.drinks.note %}<span class="drinks__note">{{ store.drinks.note }}</span>{% endif %}
       </div>
+      {%- endif %}
 
-      {%- if store.maps_embed %}
-      <div class="rise">
-        <iframe class="map" src="{{ store.maps_embed }}" title="{{ store.name_short }} map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <p class="note" data-i18n="menu_note">Menu and prices may change. Please tell our staff about any allergies.</p>
+
+      {%- if store.tablecheck_url %}
+      <div class="after">
+        <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+        <p data-i18n="resv_note">Reservations recommended</p>
       </div>
       {%- endif %}
     </div>
   </div>
 </section>
+{%- endif %}
 
-<!-- ============================================================ FOOTER -->
+<!-- ══════════════════════════════════════════ RESERVATION -->
+<section class="resv" id="reserve">
+  {%- if store.hero_photos.length %}
+  <img class="resv__bg" src="/{{ store.hero_photos[0] }}" alt="" loading="lazy" decoding="async" aria-hidden="true">
+  <div class="resv__scrim" aria-hidden="true"></div>
+  {%- endif %}
+  <div class="wrap resv__in">
+    <div class="in">
+      <p class="vlabel"><span data-i18n="resv_label">Reservations</span></p>
+      <p class="hlabel" data-i18n="resv_label">Reservations</p>
+      <h2 class="resv__t" style="margin-top:0" data-i18n="resv_title">Book your table</h2>
+      <p class="resv__d" data-i18n="resv_body">Seats fill up quickly, so we recommend reserving in advance. Booking takes about a minute.</p>
+      <div class="resv__cta">
+        {%- if store.tablecheck_url %}
+        <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_online">Reserve online</a>
+        {%- endif %}
+        {%- if store.tel_display %}
+        <a class="btn btn--line" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
+        {%- endif %}
+      </div>
+      {%- if store.tel_display %}
+      <p class="resv__tel"><a href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click">{{ store.tel_display }}</a>{% if store.hours %} &nbsp;&nbsp;{{ store.hours }}{% endif %}</p>
+      {%- endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ GALLERY -->
+{%- if store.gallery.length %}
+<section class="sec">
+  <div class="wrap">
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="gallery_label">The restaurant</span></p>
+      <p class="hlabel" data-i18n="gallery_label">The restaurant</p>
+      <h2 class="t">{{ store.city }}</h2>
+      <div class="grid">
+        {%- for g in store.gallery %}
+        <figure class="shot">
+          <img src="/{{ g.src }}" alt="{{ store.name_short }} — {{ g.caption }}" loading="lazy" decoding="async">
+          {%- if g.caption %}<figcaption>{{ g.caption }}</figcaption>{% endif %}
+        </figure>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif %}
+
+<!-- ══════════════════════════════════════════ ACCESS -->
+<section class="sec" id="access" style="padding-top:0">
+  <div class="wrap">
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="access_label">Access</span></p>
+      <p class="hlabel" data-i18n="access_label">Access</p>
+      <div class="acc{% if not store.maps_embed %} acc--solo{% endif %}">
+        <div>
+          <h2 class="t"><span data-i18n="access_title">Find us in</span> {{ store.city }}.</h2>
+          <div class="rows">
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_name">Restaurant</span>
+              <span class="rows__v">{{ store.name }}</span>
+            </div>
+            {%- if store.address_en %}
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_address">Address</span>
+              <span class="rows__v">{{ store.address_en }}</span>
+            </div>
+            {%- endif %}
+            {%- if store.station_en %}
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_station">Nearest station</span>
+              <span class="rows__v">{{ store.station_en }}{% if store.station_note %}<small>{{ store.station_note }}</small>{% endif %}</span>
+            </div>
+            {%- endif %}
+            {%- if store.hours %}
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_hours">Hours</span>
+              <span class="rows__v">{{ store.hours }}{% if store.hours_note or store.hours_special %}<small>{{ store.hours_note }}{% if store.hours_special %} · {{ store.hours_special }}{% endif %}</small>{% endif %}</span>
+            </div>
+            {%- endif %}
+            {%- if store.tel_display %}
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_tel">Phone</span>
+              <span class="rows__v"><a href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click">{{ store.tel_display }}</a></span>
+            </div>
+            {%- endif %}
+            {%- if store.seats %}
+            <div class="rows__r">
+              <span class="rows__k" data-i18n="lbl_seats">Seats</span>
+              <span class="rows__v">{{ store.seats }}</span>
+            </div>
+            {%- endif %}
+          </div>
+
+          {%- if store.google_rating %}
+          <p class="stars">
+            <span class="stars__n">{{ store.google_rating }}</span>
+            <span class="stars__s" aria-hidden="true">★★★★★</span>
+            {%- if store.google_reviews_url %}
+            <a href="{{ store.google_reviews_url }}" target="_blank" rel="noopener" data-ga-event="outbound_click"><span data-i18n="reviews_label">Google rating</span>{% if store.google_count %} ({{ store.google_count }}){% endif %}</a>
+            {%- endif %}
+          </p>
+          {%- endif %}
+
+          <div class="acc__cta">
+            {%- if store.tablecheck_url %}
+            <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+            {%- else %}
+            <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
+            {%- endif %}
+            {%- if store.maps_link %}
+            <a class="btn btn--line" href="{{ store.maps_link }}" target="_blank" rel="noopener" data-ga-event="map_click" data-i18n="cta_directions">Get directions</a>
+            {%- endif %}
+          </div>
+        </div>
+
+        {%- if store.maps_embed %}
+        <div>
+          <iframe class="map" src="{{ store.maps_embed }}" title="{{ store.name_short }} map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+        {%- endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ FOOTER -->
 <footer class="foot">
   <div class="wrap">
-    <div class="foot__top">
-      <p class="foot__mark">Farm to Table</p>
-      <p class="foot__note" data-i18n="footer_note">Wagyu raised by us, grilled by you.</p>
-    </div>
+    <p class="foot__mark">Farm to Table</p>
     <nav class="foot__links">
       {%- if store.tablecheck_url %}
-      <a class="foot__a" href="{{ store.tablecheck_url }}?utm_source=lp&utm_medium=referral" target="_blank" rel="noopener" data-ga-event="reserve_click">Reservation</a>
+      <a class="foot__a" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click">Reservation</a>
       {%- endif %}
       {%- if store.tel_display %}
       <a class="foot__a" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click">Call</a>
@@ -654,14 +776,14 @@ ul,ol{list-style:none}
   </div>
 </footer>
 
-<!-- ============================================================ LANGUAGE -->
-<div class="lang-switcher" role="group" aria-label="Language switcher">
-  <button type="button" data-lang="en" class="active">EN</button>
-  <button type="button" data-lang="ja">日本語</button>
-  <button type="button" data-lang="zh">简体</button>
-  <button type="button" data-lang="zt">繁體</button>
-  <button type="button" data-lang="ko">한국어</button>
-</div>
+<nav class="dock" aria-label="Reserve">
+  {%- if store.tablecheck_url %}
+  <a class="dock__r" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+  {%- endif %}
+  {%- if store.tel_display %}
+  <a class="dock__t" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call</a>
+  {%- endif %}
+</nav>
 
 <script type="application/ld+json">
 {
@@ -680,9 +802,21 @@ ul,ol{list-style:none}
 </script>
 
 <script>
-/* =====================================================================
-   1) ヒーローのスライドショー
-   ===================================================================== */
+/* 帯＋ヘッダーの高さを実測してヒーローの高さに反映（翻訳で行数が変わっても崩れない） */
+(function(){
+  var banner = document.querySelector('.banner');
+  var head = document.querySelector('.head');
+  function setStack(){
+    var h = (banner ? banner.offsetHeight : 0) + (head ? head.offsetHeight : 0);
+    document.documentElement.style.setProperty('--stack', h + 'px');
+  }
+  setStack();
+  window.addEventListener('resize', setStack);
+  window.addEventListener('load', setStack);
+  document.addEventListener('langchange', setStack);
+})();
+
+/* ヒーローのクロスフェード */
 (function(){
   var shots = document.querySelectorAll('.hero__shot');
   if (shots.length < 2) return;
@@ -692,224 +826,179 @@ ul,ol{list-style:none}
     shots[i].classList.remove('is-on');
     i = (i + 1) % shots.length;
     shots[i].classList.add('is-on');
-  }, 5200);
+  }, 6000);
 })();
 
-/* =====================================================================
-   2) スクロールで出るヘッダー / スクロール表示アニメーション
-   ===================================================================== */
+/* スクロール表示 */
 (function(){
-  var bar = document.getElementById('topbar');
-  var hero = document.querySelector('.hero');
-  if (bar && hero && 'IntersectionObserver' in window) {
-    new IntersectionObserver(function(es){
-      bar.classList.toggle('is-on', !es[0].isIntersecting);
-    }, {rootMargin: '-72% 0px 0px 0px'}).observe(hero);
-  }
   var items = document.querySelectorAll('.rise');
   if (!('IntersectionObserver' in window)) {
     items.forEach(function(el){ el.classList.add('is-in'); });
-    return;
+  } else {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin: '0px 0px -6% 0px', threshold: 0.04});
+    items.forEach(function(el){ io.observe(el); });
   }
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){
-      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-    });
-  }, {rootMargin: '0px 0px -8% 0px', threshold: 0.06});
-  items.forEach(function(el){ io.observe(el); });
-
   var yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();
 })();
+</script>
 
-/* =====================================================================
-   3) 計測 — data-ga-event="◯◯" を付けた要素をまとめて拾って dataLayer に push
-      （店舗名・エリアなどのパラメータは GTM 側で URL から解決します）
-   ===================================================================== */
-document.addEventListener('click', function(ev){
-  var el = ev.target.closest('[data-ga-event]');
-  if (!el) return;
+<script>
+  /* === クリック計測（data-ga-event → dataLayer → GTM → GA4）===
+     計測したい要素に data-ga-event="イベント名" を付けるだけ。
+     店舗・チャネル等のパラメータはコード側で組み立てず、GTM側でURLから解決する。 */
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: el.getAttribute('data-ga-event') });
-});
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-ga-event]');
+    if (!el) return;
+    window.dataLayer.push({ event: el.getAttribute('data-ga-event') });
+  }, true);
+</script>
 
-/* =====================================================================
-   4) 言語切り替え
-      翻訳文はすべてこの下の translations にまとまっています。
-      店名・住所・営業時間・電話番号・コース内容は翻訳されません
-      （stores.js に入れた文字がそのまま出ます）
-   ===================================================================== */
-var translations = {
-  en: {
-    nav_menu:"Menu", nav_access:"Access",
-    cta_reserve:"Reserve a table", cta_call:"Call to reserve", cta_directions:"Get directions",
-    hero_sub:"Sixty years in wagyu. Now we raise it ourselves — and you can eat as much as you like.",
-    trace_eyebrow:"Traceability", trace_title:"We don't just buy the wagyu. We raise it.",
-    trace_1_k:"Three generations", trace_1_t:"Est. 1962",
-    trace_1_d:"Our founder began as a wagyu trader, walking Japan's cattle country to choose beef with his own eyes.",
-    trace_2_k:"Raised by us", trace_2_t:"Our own farm",
-    trace_2_d:"Buying was never enough. Today we raise wagyu ourselves, one animal at a time.",
-    trace_3_k:"One cow, every cut", trace_3_t:"Whole carcass",
-    trace_3_d:"We take the whole animal, so rare cuts reach your table instead of the wholesale market.",
-    trace_tag_label:"Individual ID", trace_tag_value:"Ask your server for today's number",
-    story_eyebrow:"Since 1962", story_title:"From the farm, to your table.",
-    story_p1:"In 1962 our founder set out across Japan's cattle country, meeting farmers one by one and choosing wagyu with his own eyes. That eye was handed down — through wholesale, through the butcher's counter, and finally into a restaurant of our own.",
-    story_p2:"But buying good beef was never enough. To serve wagyu we could truly stand behind, we had to raise it ourselves. So we did.",
-    story_quote:"We wanted to serve better wagyu than anyone could buy.",
-    story_p3:"Sixty years of relationships, a trained eye, and a herd of our own — put together so you can eat wagyu until you are full, not until the bill says stop.",
-    story_caption:"Our herd, at feed",
-    menu_eyebrow:"All you can eat", menu_title:"Three ways to eat wagyu.",
-    menu_per:"per person", menu_drinks:"Add free-flow drinks",
-    menu_note:"Menu and prices may change without notice. Please tell our staff about any allergies.",
-    gallery_eyebrow:"The room", gallery_title:"A grill at every table.",
-    access_eyebrow:"Access", access_title:"Find us in",
-    lbl_address:"Address", lbl_access:"Nearest station", lbl_hours:"Hours",
-    lbl_tel:"Phone", lbl_seats:"Seats",
-    reviews_label:"Google rating",
-    footer_note:"Wagyu raised by us, grilled by you."
-  },
-  ja: {
-    nav_menu:"コース", nav_access:"アクセス",
-    cta_reserve:"席を予約する", cta_call:"電話で予約", cta_directions:"地図を見る",
-    hero_sub:"和牛ひとすじ60年。いまは、自分たちで育てています。それを、心ゆくまで。",
-    trace_eyebrow:"生産履歴", trace_title:"仕入れるだけでは、足りなかった。",
-    trace_1_k:"三代にわたって", trace_1_t:"創業1962年",
-    trace_1_d:"初代は和牛商人として全国の産地を訪ね歩き、自分の目で牛を選び続けました。",
-    trace_2_k:"自分たちで育てる", trace_2_t:"自社牧場",
-    trace_2_d:"仕入れだけでは満足できず、いまは一頭一頭、自分たちの手で和牛を育てています。",
-    trace_3_k:"希少部位まで", trace_3_t:"一頭買い",
-    trace_3_d:"一頭まるごと引き受けるから、市場に出にくい部位もそのままテーブルへ。",
-    trace_tag_label:"個体識別番号", trace_tag_value:"本日の番号はスタッフまでお尋ねください",
-    story_eyebrow:"1962年から", story_title:"牧場から、食卓まで。",
-    story_p1:"1962年、初代は全国の産地を訪ね歩き、生産者と向き合いながら、自分の目で和牛を選び続けました。その目利きは、卸へ、精肉店へ、そして自分たちの焼肉店へと受け継がれています。",
-    story_p2:"それでも、仕入れるだけでは足りませんでした。心から自信を持てる和牛をお出しするには、自分たちで育てるしかない。だから、育てはじめました。",
-    story_quote:"もっと美味しい和牛を届けたい。",
-    story_p3:"60年分の生産者との信頼、受け継いだ目利き、そして自社の牛。そのすべては、和牛を心ゆくまで味わっていただくために。",
-    story_caption:"自社牧場の牛たち",
-    menu_eyebrow:"食べ放題", menu_title:"和牛の味わい方を、3つ。",
-    menu_per:"お一人さま", menu_drinks:"飲み放題を追加",
-    menu_note:"内容・価格は変更になる場合があります。アレルギーはスタッフまでお申し付けください。",
-    gallery_eyebrow:"店内", gallery_title:"全席、ロースター付き。",
-    access_eyebrow:"アクセス", access_title:"店舗情報 —",
-    lbl_address:"住所", lbl_access:"最寄駅", lbl_hours:"営業時間", lbl_tel:"電話", lbl_seats:"席数",
-    reviews_label:"Googleの評価",
-    footer_note:"育てたのは、私たち。焼くのは、あなた。"
-  },
-  zh: {
-    nav_menu:"套餐", nav_access:"交通",
-    cta_reserve:"在线订位", cta_call:"致电订位", cta_directions:"查看地图",
-    hero_sub:"六十年只做和牛，如今由我们亲手饲养。请尽情享用。",
-    trace_eyebrow:"生产履历", trace_title:"只是采购，远远不够。",
-    trace_1_k:"传承三代", trace_1_t:"创业于1962年",
-    trace_1_d:"初代作为和牛商人走遍日本各地产区，亲眼挑选每一头牛。",
-    trace_2_k:"亲手饲养", trace_2_t:"自有牧场",
-    trace_2_d:"仅仅采购无法让我们满意，如今我们一头一头亲手饲养和牛。",
-    trace_3_k:"连稀有部位", trace_3_t:"整头采购",
-    trace_3_d:"整头买下，因此难以流通到市场的稀有部位也能直接端上餐桌。",
-    trace_tag_label:"个体识别号码", trace_tag_value:"今日的号码请向店员咨询",
-    story_eyebrow:"自1962年", story_title:"从牧场，到餐桌。",
-    story_p1:"1962年，初代走遍日本各地产区，与生产者面对面，亲眼挑选和牛。这份眼光传承至批发、精肉店，最终成就了我们自己的烤肉店。",
-    story_p2:"但只是采购，仍然不够。为了端出真正问心无愧的和牛，只能自己饲养。于是，我们开始了。",
-    story_quote:"想把更美味的和牛送到您面前。",
-    story_p3:"六十年与生产者的信赖、传承下来的眼光，以及自家饲养的牛——一切都是为了让您尽情品尝和牛。",
-    story_caption:"自有牧场的牛群",
-    menu_eyebrow:"自助畅食", menu_title:"三种品味和牛的方式。",
-    menu_per:"每位", menu_drinks:"加购无限畅饮",
-    menu_note:"内容与价格可能变更。如有食物过敏请告知店员。",
-    gallery_eyebrow:"店内", gallery_title:"每桌皆配备烤炉。",
-    access_eyebrow:"交通", access_title:"店铺信息 —",
-    lbl_address:"地址", lbl_access:"最近车站", lbl_hours:"营业时间", lbl_tel:"电话", lbl_seats:"座位数",
-    reviews_label:"Google 评分",
-    footer_note:"我们饲养，您来烤。"
-  },
-  zt: {
-    nav_menu:"套餐", nav_access:"交通",
-    cta_reserve:"線上訂位", cta_call:"致電訂位", cta_directions:"查看地圖",
-    hero_sub:"六十年只做和牛，如今由我們親手飼養。請盡情享用。",
-    trace_eyebrow:"生產履歷", trace_title:"只是採購，遠遠不夠。",
-    trace_1_k:"傳承三代", trace_1_t:"創業於1962年",
-    trace_1_d:"初代作為和牛商人走遍日本各地產區，親眼挑選每一頭牛。",
-    trace_2_k:"親手飼養", trace_2_t:"自有牧場",
-    trace_2_d:"僅僅採購無法讓我們滿意，如今我們一頭一頭親手飼養和牛。",
-    trace_3_k:"連稀有部位", trace_3_t:"整頭採購",
-    trace_3_d:"整頭買下，因此難以流通到市場的稀有部位也能直接端上餐桌。",
-    trace_tag_label:"個體識別號碼", trace_tag_value:"今日的號碼請向店員洽詢",
-    story_eyebrow:"自1962年", story_title:"從牧場，到餐桌。",
-    story_p1:"1962年，初代走遍日本各地產區，與生產者面對面，親眼挑選和牛。這份眼光傳承至批發、精肉店，最終成就了我們自己的燒肉店。",
-    story_p2:"但只是採購，仍然不夠。為了端出真正問心無愧的和牛，只能自己飼養。於是，我們開始了。",
-    story_quote:"想把更美味的和牛送到您面前。",
-    story_p3:"六十年與生產者的信賴、傳承下來的眼光，以及自家飼養的牛——一切都是為了讓您盡情品嚐和牛。",
-    story_caption:"自有牧場的牛群",
-    menu_eyebrow:"吃到飽", menu_title:"三種品味和牛的方式。",
-    menu_per:"每位", menu_drinks:"加購暢飲",
-    menu_note:"內容與價格可能變更。如有食物過敏請告知店員。",
-    gallery_eyebrow:"店內", gallery_title:"每桌皆配備烤爐。",
-    access_eyebrow:"交通", access_title:"店鋪資訊 —",
-    lbl_address:"地址", lbl_access:"最近車站", lbl_hours:"營業時間", lbl_tel:"電話", lbl_seats:"座位數",
-    reviews_label:"Google 評分",
-    footer_note:"我們飼養，您來烤。"
-  },
-  ko: {
-    nav_menu:"코스", nav_access:"오시는 길",
-    cta_reserve:"예약하기", cta_call:"전화로 예약", cta_directions:"지도 보기",
-    hero_sub:"와규 한 길 60년. 이제는 직접 키웁니다. 마음껏 즐기세요.",
-    trace_eyebrow:"생산 이력", trace_title:"매입만으로는 부족했습니다.",
-    trace_1_k:"3대에 걸쳐", trace_1_t:"1962년 창업",
-    trace_1_d:"창업자는 와규 상인으로 전국의 산지를 찾아다니며 직접 눈으로 소를 골랐습니다.",
-    trace_2_k:"직접 사육", trace_2_t:"자체 목장",
-    trace_2_d:"매입만으로는 만족할 수 없어, 지금은 한 마리 한 마리 직접 와규를 키우고 있습니다.",
-    trace_3_k:"희소 부위까지", trace_3_t:"한 마리 통째로",
-    trace_3_d:"소 한 마리를 통째로 들여오기에, 시장에 잘 나오지 않는 부위까지 그대로 식탁에 오릅니다.",
-    trace_tag_label:"개체 식별 번호", trace_tag_value:"오늘의 번호는 직원에게 문의해 주세요",
-    story_eyebrow:"1962년부터", story_title:"목장에서, 식탁까지.",
-    story_p1:"1962년, 창업자는 전국의 산지를 찾아다니며 생산자와 마주하고 직접 눈으로 와규를 골랐습니다. 그 안목은 도매로, 정육점으로, 그리고 우리의 야키니쿠 가게로 이어졌습니다.",
-    story_p2:"그래도 매입만으로는 부족했습니다. 진심으로 자신 있는 와규를 내놓으려면 직접 키우는 수밖에 없었습니다. 그래서 키우기 시작했습니다.",
-    story_quote:"더 맛있는 와규를 전하고 싶다.",
-    story_p3:"60년간 쌓아온 생산자와의 신뢰, 물려받은 안목, 그리고 우리 소. 그 모든 것은 와규를 마음껏 즐기시도록 하기 위함입니다.",
-    story_caption:"자체 목장의 소들",
-    menu_eyebrow:"무한리필", menu_title:"와규를 즐기는 세 가지 방법.",
-    menu_per:"1인", menu_drinks:"무한 음료 추가",
-    menu_note:"내용과 가격은 변경될 수 있습니다. 알레르기가 있으시면 직원에게 알려주세요.",
-    gallery_eyebrow:"매장", gallery_title:"전 좌석 로스터 완비.",
-    access_eyebrow:"오시는 길", access_title:"매장 정보 —",
-    lbl_address:"주소", lbl_access:"가까운 역", lbl_hours:"영업시간", lbl_tel:"전화", lbl_seats:"좌석",
-    reviews_label:"Google 평점",
-    footer_note:"저희가 키우고, 손님이 굽습니다."
+<script>
+  /* === 言語切り替え EN / ZH / KO ===
+     翻訳は機械翻訳をベースに調整したものです。公開前にネイティブ確認を推奨します。
+     店名・住所・営業時間・電話番号・コース内容は翻訳されません
+     （stores.js に入れた文字がそのまま出ます）。 */
+  var translations = {
+    en: {
+      banner:"Reservations recommended — seats fill up quickly",
+      cta_reserve:"Reserve", cta_reserve_long:"Reserve a table", cta_reserve_online:"Reserve online",
+      cta_call:"Call", cta_call_long:"Call to reserve", cta_directions:"Get directions",
+      resv_note:"Reservations recommended",
+      say_label:"Since 1962",
+      say_quote:"We want you to enjoy truly delicious wagyu to your heart's content.",
+      say_by:"Farm to Table — cattle farmers since 1962",
+      story_label:"Our story",
+      story_title:"1962. Our history began with a single wagyu trader.",
+      story_p1:"The founder travelled the country to visit producers, looked at the cattle with his own eyes, and kept choosing only truly good wagyu. That belief was handed down, expanding into meat wholesale, a butcher shop, and then a yakiniku restaurant.",
+      story_p2:"But buying alone did not satisfy us.",
+      story_quote:"We want to deliver more delicious wagyu.",
+      story_p3:"Our answer was to raise wagyu ourselves. We took on production, caring for each animal, in pursuit of wagyu we can genuinely stand behind.",
+      story_p4:"And there was one more thing we wanted to make happen: we want you to enjoy truly delicious wagyu to your heart's content. So we drew on the eye for quality cultivated over more than 60 years, our relationships with producers, and the strength of raising our own wagyu, and created an all-you-can-eat brand where you can savour wagyu to the full.",
+      story_p5:"Wagyu, closer to everyone. We put the dedication of our producers and more than 60 years of craft into every plate.",
+      story_caption:"Our own farm",
+      str_label:"Our strengths", str_title:"A yakiniku restaurant run by cattle farmers.",
+      str_1_k:"Over 60 years", str_1_t:"An eye for quality",
+      str_1_d:"Cultivated since 1962 and handed down through the trade.",
+      str_2_k:"Producers", str_2_t:"Relationships of trust",
+      str_2_d:"Built by visiting farms across the country, one producer at a time.",
+      str_3_k:"Our own farm", str_3_t:"We raise it ourselves",
+      str_3_d:"From raising to serving, in our own hands — caring for each animal.",
+      menu_label:"All you can eat", menu_title:"Courses",
+      menu_per:"per person", menu_drinks:"Free-flow drinks",
+      menu_note:"Menu and prices may change. Please tell our staff about any allergies.",
+      resv_label:"Reservations", resv_title:"Book your table",
+      resv_body:"Seats fill up quickly, so we recommend reserving in advance. Booking takes about a minute.",
+      gallery_label:"The restaurant",
+      access_label:"Access", access_title:"Find us in",
+      lbl_name:"Restaurant", lbl_address:"Address", lbl_station:"Nearest station",
+      lbl_hours:"Hours", lbl_tel:"Phone", lbl_seats:"Seats",
+      reviews_label:"Google rating"
+    },
+    zh: {
+      banner:"建议提前订位 — 座位很快额满",
+      cta_reserve:"订位", cta_reserve_long:"预订座位", cta_reserve_online:"在线订位",
+      cta_call:"致电", cta_call_long:"致电订位", cta_directions:"查看地图",
+      resv_note:"建议提前订位",
+      say_label:"自1962年",
+      say_quote:"希望您尽情享用真正美味的和牛。",
+      say_by:"Farm to Table — 自1962年的畜牧农场主",
+      story_label:"品牌故事",
+      story_title:"1962年，我们的历史始于一位和牛商人。",
+      story_p1:"初代走遍全国拜访生产者，亲眼审视每一头牛，始终只挑选真正优质的和牛。这份信念代代相传，从肉品批发、精肉店，一路延伸到烤肉店。",
+      story_p2:"但仅仅是采购，并不能让我们满足。",
+      story_quote:"想把更美味的和牛送到您面前。",
+      story_p3:"我们的答案，是自己饲养和牛。我们从生产做起，对每一头牛都精心照料，追求真正令自己信服的和牛。",
+      story_p4:"还有一件事，是我们一直想实现的——希望您尽情享用真正美味的和牛。因此，我们凭借六十余年积累的鉴别眼光、与生产者之间的信赖关系，以及自家饲养的优势，打造了这个能让您尽兴品尝和牛的自助畅食品牌。",
+      story_p5:"让和牛更贴近生活。我们将生产者的心意与六十余年传承的技艺，融入每一道菜品之中。",
+      story_caption:"自有牧场",
+      str_label:"我们的优势", str_title:"由畜牧农场主经营的烤肉店。",
+      str_1_k:"六十余年", str_1_t:"鉴别的眼光",
+      str_1_d:"自1962年积累至今，在行业中代代相传。",
+      str_2_k:"生产者", str_2_t:"信赖的关系",
+      str_2_d:"走遍全国各地牧场，与生产者一位一位建立起来。",
+      str_3_k:"自有牧场", str_3_t:"由我们亲手饲养",
+      str_3_d:"从饲养到上桌，全由自己完成，对每一头牛精心照料。",
+      menu_label:"自助畅食", menu_title:"套餐",
+      menu_per:"每位", menu_drinks:"无限畅饮",
+      menu_note:"内容与价格可能变更。如有食物过敏请告知店员。",
+      resv_label:"订位", resv_title:"预订座位",
+      resv_body:"座位很快额满，建议提前订位。预订大约只需一分钟。",
+      gallery_label:"店内环境",
+      access_label:"交通", access_title:"店铺位于",
+      lbl_name:"店名", lbl_address:"地址", lbl_station:"最近车站",
+      lbl_hours:"营业时间", lbl_tel:"电话", lbl_seats:"座位数",
+      reviews_label:"Google 评分"
+    },
+    ko: {
+      banner:"예약을 권장합니다 — 좌석이 빨리 찹니다",
+      cta_reserve:"예약", cta_reserve_long:"좌석 예약하기", cta_reserve_online:"온라인 예약",
+      cta_call:"전화", cta_call_long:"전화로 예약", cta_directions:"지도 보기",
+      resv_note:"예약을 권장합니다",
+      say_label:"1962년부터",
+      say_quote:"정말 맛있는 와규를 마음껏 즐기시기 바랍니다.",
+      say_by:"Farm to Table — 1962년부터 이어온 축산 농가",
+      story_label:"브랜드 스토리",
+      story_title:"1962년, 저희의 역사는 한 명의 와규 상인에서 시작되었습니다.",
+      story_p1:"창업자는 전국의 생산자를 찾아다니며 직접 눈으로 소를 보고, 정말 좋은 와규만을 골라 왔습니다. 그 마음은 대를 이어 정육 도매로, 정육점으로, 그리고 야키니쿠 가게로 이어졌습니다.",
+      story_p2:"그러나 매입만으로는 만족할 수 없었습니다.",
+      story_quote:"더 맛있는 와규를 전하고 싶다.",
+      story_p3:"그 답이 바로 직접 와규를 키우는 것이었습니다. 생산부터 도전하여 한 마리 한 마리에 정성을 들이며, 진심으로 납득할 수 있는 와규를 추구하고 있습니다.",
+      story_p4:"그리고 또 하나 이루고 싶었던 것이 있습니다. 정말 맛있는 와규를 마음껏 즐기시길 바라는 것입니다. 그래서 60년 이상 쌓아온 안목과 생산자와의 신뢰 관계, 그리고 자체 생산이라는 강점을 살려 와규를 마음껏 맛볼 수 있는 무한리필 브랜드를 만들었습니다.",
+      story_p5:"와규를 더 가깝게. 생산자의 마음과 60년 이상 이어져 온 기술을 한 접시 한 접시에 담아 전해 드립니다.",
+      story_caption:"자체 목장",
+      str_label:"저희의 강점", str_title:"축산 전문가가 운영하는 야키니쿠 가게.",
+      str_1_k:"60년 이상", str_1_t:"고기를 보는 안목",
+      str_1_d:"1962년부터 쌓아 올려 대를 이어 전해져 왔습니다.",
+      str_2_k:"생산자", str_2_t:"신뢰 관계",
+      str_2_d:"전국의 목장을 찾아다니며 한 분 한 분과 쌓아 왔습니다.",
+      str_3_k:"자체 목장", str_3_t:"직접 키웁니다",
+      str_3_d:"사육부터 제공까지 저희 손으로, 한 마리 한 마리에 정성을 들입니다.",
+      menu_label:"무한리필", menu_title:"코스",
+      menu_per:"1인", menu_drinks:"무한 음료",
+      menu_note:"내용과 가격은 변경될 수 있습니다. 알레르기가 있으시면 직원에게 알려주세요.",
+      resv_label:"예약", resv_title:"좌석 예약하기",
+      resv_body:"좌석이 빨리 차기 때문에 미리 예약하시기를 권장합니다. 예약은 1분 정도면 완료됩니다.",
+      gallery_label:"매장 내부",
+      access_label:"오시는 길", access_title:"위치는",
+      lbl_name:"매장명", lbl_address:"주소", lbl_station:"가까운 역",
+      lbl_hours:"영업시간", lbl_tel:"전화", lbl_seats:"좌석",
+      reviews_label:"Google 평점"
+    }
+  };
+
+  function applyLanguage(lang) {
+    var dict = translations[lang] || translations.en;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    var HTMLLANG = { en:"en", zh:"zh-Hans", ko:"ko" };
+    document.documentElement.setAttribute('lang', HTMLLANG[lang] || 'en');
+    document.querySelectorAll('.lang button').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    try { localStorage.setItem('preferred_lang', lang); } catch (e) {}
+    document.dispatchEvent(new Event('langchange'));
   }
-};
 
-function applyLanguage(lang) {
-  var dict = translations[lang] || translations.en;
-  document.querySelectorAll('[data-i18n]').forEach(function (el) {
-    var key = el.getAttribute('data-i18n');
-    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  document.querySelectorAll('.lang button').forEach(function (btn) {
+    btn.addEventListener('click', function () { applyLanguage(btn.getAttribute('data-lang')); });
   });
-  var HTMLLANG = { en:"en", ja:"ja", zh:"zh-Hans", zt:"zh-Hant", ko:"ko" };
-  document.documentElement.setAttribute('lang', HTMLLANG[lang] || 'en');
-  document.querySelectorAll('.lang-switcher button').forEach(function (btn) {
-    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-  });
-  try { localStorage.setItem('preferred_lang', lang); } catch (e) {}
-}
 
-document.querySelectorAll('.lang-switcher button').forEach(function (btn) {
-  btn.addEventListener('click', function () { applyLanguage(btn.getAttribute('data-lang')); });
-});
-
-(function initLang() {
-  var saved = null;
-  try { saved = localStorage.getItem('preferred_lang'); } catch (e) {}
-  if (saved && translations[saved]) { if (saved !== 'en') applyLanguage(saved); return; }
-  // 保存が無いときだけブラウザの言語から推定する（アジア圏の来店客向け）
-  var n = (navigator.language || 'en').toLowerCase();
-  var guess = 'en';
-  if (n.indexOf('ja') === 0) guess = 'ja';
-  else if (n.indexOf('ko') === 0) guess = 'ko';
-  else if (n.indexOf('zh') === 0) {
-    guess = (n.indexOf('tw') > -1 || n.indexOf('hk') > -1 || n.indexOf('hant') > -1) ? 'zt' : 'zh';
-  }
-  if (guess !== 'en') applyLanguage(guess);
-})();
+  (function initLang() {
+    var saved = null;
+    try { saved = localStorage.getItem('preferred_lang'); } catch (e) {}
+    if (saved && translations[saved]) { if (saved !== 'en') applyLanguage(saved); return; }
+    var n = (navigator.language || 'en').toLowerCase();
+    if (n.indexOf('ko') === 0) applyLanguage('ko');
+    else if (n.indexOf('zh') === 0) applyLanguage('zh');
+  })();
 </script>
 </body>
 </html>

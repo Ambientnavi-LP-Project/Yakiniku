@@ -10,24 +10,51 @@ HTML やプログラミングの知識は必要ありません。
 
 ## 0. 公開前にやること（チェックリスト）
 
-現在いくつかの値が**仮のまま**入っています。公開前に必ず埋めてください。
+いくつかの値が**仮のまま**入っています。公開前に必ず埋めてください。
 
 | ファイル | 項目 | 状態 |
 |---|---|---|
 | `src/_data/stores.js` | `domain`（公開ドメイン） | ★仮 |
 | `src/_data/stores.js` | `gtm_id`（GTMコンテナID） | ★空。新規コンテナを作る |
 | `src/_data/stores.js` | `defaults.instagram_official` | ★空 |
-| `src/_data/stores.js` | `address_jp` / `address_en`（住所） | ★仮 |
-| `src/_data/stores.js` | `station_en` / `station_note`（最寄駅・町名） | ★仮 |
-| `src/_data/stores.js` | `tel_display` / `tel_raw` | ★仮 |
-| `src/_data/stores.js` | `hours` / `hours_note` | ★仮 |
-| `src/_data/stores.js` | `tablecheck_url`（予約URL） | ★空 |
-| `src/_data/stores.js` | `maps_link` / `maps_embed` | ★空 |
+| `src/_data/stores.js` | `maps_link` / `maps_embed` | ★空。地図が出ません |
+| `src/_data/stores.js` | `station_en` / `station_note`（最寄駅） | ★空。行ごと出ません |
 | `src/_data/stores.js` | **`courses`（コース名・金額・内容）** | **★全部仮。要差し替え** |
-| `src/_data/stores.js` | `drinks`（飲み放題） | ★仮 |
 | `assets/` | 焼肉・内観・牧場の写真 | ★仮画像 |
 
+**入力済み（いただいた情報を反映）**
+
+| 項目 | 値 |
+|---|---|
+| 住所 | 〒542-0084 大阪府大阪市中央区宗右衛門町3-5 金田ビル 2F |
+| 電話 | 080-8221-9371 |
+| 営業時間 | 11:00 — 23:00 |
+| 予約 | https://www.tablecheck.com/shops/5wnipponbashi/reserve |
+
 **とくにコース金額は仮の数字です。** そのまま公開しないでください。
+
+---
+
+## 0.5 写真について
+
+**いただいた写真をすべて反映済みです。**（Web用に長辺1600px前後へ縮小・圧縮しています）
+
+| ファイル名 | 元ファイル | 使われている場所 |
+|---|---|---|
+| `assets/wagyu-01.jpg` | DSC03114 | ヒーロー背景／予約欄の背景／ギャラリー |
+| `assets/farm-01.jpg` | DSC09084 | ストーリー欄の全幅写真（給餌中の牛） |
+| `assets/farm-02.jpg` | DSC09173 | 強み欄（生産者と牛） |
+| `assets/interior-01.jpg` | IMG_4076 | ヒーロー背景／ギャラリー（窓際席） |
+| `assets/interior-02.jpg` | IMG_4078 | ヒーロー背景／ギャラリー（ボックス席） |
+| `assets/interior-03.jpg` | IMG_4065 | ギャラリー（俯瞰） |
+| `assets/og.jpg` | DSC03114 から生成 | SNSシェア時の画像 |
+| `assets/wagyu-01-sq.jpg` `farm-02-wide.jpg` | 予備 | 未使用（正方形／横長の別トリミング） |
+
+差し替えるときは、`assets/` に**同じファイル名で**アップロードしてください。
+`stores.js` を触る必要はありません。
+
+写真を増やすときは `assets/` に置いて、`stores.js` の `hero_photos` や `gallery` に
+ファイル名を足します。1枚あたり **400KB以下**が目安です。
 
 ---
 
@@ -262,12 +289,13 @@ tel_raw: "81612345678",        // タップで発信するための番号
 
 ## 9. 言語切り替えについて
 
-各店舗ページの**右下**に、English / 日本語 / 简体中文 / 繁體中文 / 한국어 の
-切り替えボタンがあります。**全店舗のページに入っています。** 特別な設定は不要です。
+各店舗ページの**ヘッダー右上**に、EN / 中文 / 한국어 の切り替えボタンがあります。
+ヘッダーはスクロールしても上部に残るので、どこを見ていても切り替えられます。
+スマホでは予約ボタンを画面下の固定バーに移し、その分ヘッダーは店名と言語切り替えだけにしています。**全店舗のページに入っています。** 特別な設定は不要です。
 
 - 仕組みは既存 halal-wagyu-burger と**同じ**です（`data-i18n` 属性＋`translations` 辞書）
 - 保存キーも同じ `preferred_lang` を使っています
-- 初回のみブラウザの言語から自動で選ばれます（中国語は台湾・香港なら繁体字）。
+- 初回のみブラウザの言語から自動で選ばれます。
   一度でも自分でボタンを押すと、以後はその選択が優先されます
 - 翻訳文は `src/store.njk` の一番下、`translations` という部分にまとまっています
 - 翻訳値には `<br>` などのHTMLタグも使えます（`innerHTML` で差し込むため）
