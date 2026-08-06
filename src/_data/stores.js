@@ -84,6 +84,14 @@ const brand = "Farm to Table";
 const founded = "1962";
 const og_image = "assets/og.jpg";
 
+// ロゴ画像（いただいた版下から生成。差し替えるときは同じファイル名で assets/ に置く）
+const logo_lockup = "assets/logo-lockup-light.png";        // ヒーロー：ロックアップ全体（暗い背景用）
+const logo_wordmark = "assets/logo-wordmark-light-plain.png";  // ヘッダー／フッター／ヒーロー：筆記体だけ
+//  ↑ 版下の「to」に重なっていた朱の落款を消したもの。
+//    落款ごと出したい場合は "assets/logo-wordmark-light.png" に戻してください。
+const logo_lockup_plain = "assets/logo-lockup-light-plain.png"; // 落款なしのロックアップ全体（予備）
+const logo_illustration = "assets/logo-illustration.jpg";  // ストーリー欄：イラスト入りのロゴ（台紙ごと）
+
 // Googleタグマネージャーのコンテナ ID（例: "GTM-XXXXXXX"）
 // ★空 "" のあいだは計測タグを一切出力しません。
 const gtm_id = "";
@@ -182,7 +190,7 @@ const stores = [
       {
         name: "Course A",
         name_jp: "コースA",
-        price: "¥0,000", // ★仮
+        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
         duration: "",
         featured: false,
         items: [],
@@ -190,7 +198,7 @@ const stores = [
       {
         name: "Course B",
         name_jp: "コースB",
-        price: "¥0,000", // ★仮
+        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
         duration: "",
         featured: true,
         items: [],
@@ -198,7 +206,7 @@ const stores = [
       {
         name: "Course C",
         name_jp: "コースC",
-        price: "¥0,000", // ★仮
+        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
         duration: "",
         featured: false,
         items: [],
@@ -224,6 +232,10 @@ export default {
   brand,
   founded,
   og_image,
+  logo_lockup,
+  logo_lockup_plain,
+  logo_wordmark,
+  logo_illustration,
   gtm_id,
   defaults,
   stores: merged,

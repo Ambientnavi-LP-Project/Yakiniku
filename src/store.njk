@@ -51,7 +51,7 @@ permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
    ═══════════════════════════════════════════════════════════════ */
 :root{
   --ink:#0B0908; --ink-2:#131010; --ink-3:#1C1714;
-  --paper:#F2EADA; --paper-2:#E7DCC6;
+  --paper:#F6EFDD; --paper-2:#EBE1C9;
   --seal:#B4382C; --seal-d:#992D22;
   --brass:#9C8055;
   --stone:#8B8074;
@@ -158,7 +158,8 @@ h2.t{
   background:rgba(11,9,8,.86);backdrop-filter:blur(14px) saturate(140%);
   border-bottom:1px solid var(--hair);
 }
-.head__mark{font-family:var(--f-script);font-size:24px;color:var(--paper);text-decoration:none;line-height:1;white-space:nowrap;padding-block:6px}
+.head__mark{display:flex;align-items:center;padding-block:6px}
+.head__mark img{height:25px;width:auto}
 .head__right{display:flex;align-items:center;gap:16px}
 
 .lang{display:flex;align-items:center}
@@ -181,10 +182,10 @@ h2.t{
 @media(max-width:760px){.head__resv{display:none}}
 @media(max-width:560px){
   .head{--head:54px;padding-inline:18px;gap:10px}
-  .head__mark{font-size:20px}
+  .head__mark img{height:21px}
   .lang button{margin-left:13px;font-size:10px;padding:8px 0;letter-spacing:.1em}
 }
-@media(max-width:340px){.head{padding-inline:14px}.head__mark{font-size:18px}.lang button{margin-left:10px}}
+@media(max-width:340px){.head{padding-inline:14px}.head__mark img{height:19px}.lang button{margin-left:10px}}
 
 /* ── hero ────────────────────────────────────────────────── */
 .hero{
@@ -208,38 +209,33 @@ h2.t{
 .hero__in{position:relative;padding-block:calc(var(--band) * .7) 34px}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
 
-/* ロゴのロックアップ（CSSで再現。透過PNGが来たら画像に差し替え可） */
-.mk{display:block;line-height:1}
-.mk__over{
-  display:block;font-family:var(--f-mono);font-size:clamp(8px,1.15vw,9.5px);font-weight:500;
-  letter-spacing:.34em;text-transform:uppercase;line-height:2;color:rgba(242,234,218,.62);
+/* ヒーローは筆記体のロゴだけ。説明文・中国語／日本語表記・創業年は
+   下のネームプレート欄にまとめてあるので、ここでは出さない */
+.mk{display:block;width:clamp(250px,32vw,420px);height:auto}
+
+/* ALL YOU CAN EAT の印。この店の一番の売りを一語で立てるための札 */
+.stamp{
+  display:inline-flex;align-items:center;position:relative;
+  margin-bottom:clamp(20px,2.6vw,30px);padding:11px 20px;
+  border:1px solid rgba(180,56,44,.95);transform:rotate(-1.1deg);
+  background:rgba(180,56,44,.16);
+  font-family:var(--f-mono);font-size:clamp(9.5px,1.05vw,11.5px);font-weight:500;
+  letter-spacing:.36em;text-transform:uppercase;color:var(--paper);
+  text-indent:.36em;
 }
-.mk__cjk{display:block;font-size:clamp(9px,1.3vw,10.5px);letter-spacing:.46em;color:rgba(242,234,218,.5);line-height:1.9;margin-top:.5em}
-.mk__word{
-  display:block;font-family:var(--f-script);font-weight:400;white-space:nowrap;
-  font-size:clamp(50px,8.6vw,104px);line-height:1;margin:.1em 0 .12em;
-  letter-spacing:-.01em;color:var(--paper);
-  text-shadow:0 4px 46px rgba(0,0,0,.6);
+.stamp::before,.stamp::after{
+  content:"";position:absolute;left:5px;right:5px;height:1px;background:rgba(180,56,44,.6);
 }
-.mk__mid{position:relative;display:inline-block;padding-inline:.05em}
-.mk__seal{
-  position:absolute;left:50%;top:50%;width:.62em;height:.62em;
-  transform:translate(-50%,-46%) rotate(-1.5deg);
-  border:.035em solid var(--seal);
-}
-.mk__est{
-  display:block;margin-top:14px;font-family:var(--f-mono);font-size:9.5px;
-  letter-spacing:.34em;text-transform:uppercase;color:rgba(242,234,218,.44);
-}
+.stamp::before{top:4px}
+.stamp::after{bottom:4px}
 
 .hero__name{
-  margin-top:30px;padding-top:24px;border-top:1px solid var(--hair);
-  max-width:44ch;font-family:var(--f-disp);font-weight:300;
-  font-size:clamp(14px,1.55vw,18px);line-height:1.55;letter-spacing:.008em;
-  color:rgba(242,234,218,.9);
+  margin-top:32px;padding-top:26px;border-top:1px solid rgba(242,234,218,.24);
+  max-width:26ch;font-family:var(--f-disp);font-weight:300;
+  font-size:clamp(18px,2.35vw,30px);line-height:1.34;letter-spacing:-.008em;
+  color:var(--paper);text-wrap:balance;
 }
 .hero__cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:30px}
-.hero__note{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(242,234,218,.5)}
 
 .hero__foot{
   position:relative;margin-top:clamp(34px,6vw,70px);
@@ -278,6 +274,9 @@ h2.t{
   max-width:var(--wrap);margin:14px auto 0;padding-inline:var(--gut);
   font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:#8B8074;
 }
+
+/* ── brand mark（イラスト入りロゴ。台紙の色が --paper と同じなので継ぎ目が出ない） ── */
+.plate{display:block;margin-inline:auto;width:clamp(250px,32vw,392px);height:auto}
 
 /* ── strengths（カードにしない。写真の横に垂れ下がる定義リスト） ── */
 .str{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(34px,5vw,72px)}
@@ -377,7 +376,7 @@ h2.t{
 
 /* ── footer ──────────────────────────────────────────────── */
 .foot{border-top:1px solid var(--hair);padding:clamp(52px,6vw,76px) 0 44px}
-.foot__mark{font-family:var(--f-script);font-size:34px;line-height:1;color:var(--paper)}
+.foot__mark{display:block;width:clamp(180px,22vw,240px);height:auto}
 .foot__links{display:flex;flex-wrap:wrap;gap:0 30px;margin-top:34px;padding-top:26px;border-top:1px solid var(--hair)}
 .foot__a{
   font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
@@ -408,6 +407,66 @@ h2.t{
   .foot{padding-bottom:100px}
 }
 
+
+/* ── name plate（Googleマップ登録名をそのまま掲げる看板） ───────── */
+.plate{border-bottom:1px solid var(--hair);text-align:center}
+.plate__in{padding-block:clamp(56px,7vw,96px)}
+.plate__over{
+  font-family:var(--f-mono);font-size:9.5px;font-weight:500;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--stone);line-height:2;
+}
+.plate__cjk{margin-top:12px;font-size:clamp(11px,1.5vw,13px);letter-spacing:.34em;color:rgba(242,234,218,.66);line-height:2}
+.plate__name{
+  margin:26px auto 0;max-width:24ch;
+  font-family:var(--f-disp);font-weight:300;
+  font-size:clamp(22px,3.5vw,44px);line-height:1.28;letter-spacing:-.02em;
+  color:var(--paper);text-wrap:balance;
+}
+.plate__foot{
+  margin-top:26px;display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--stone);
+}
+.plate__foot::before,.plate__foot::after{content:"";width:clamp(24px,6vw,72px);height:1px;background:var(--brass);opacity:.6}
+
+/* ── lineage（1962年からの流れ。資料に書かれた順序をそのまま図にする） ── */
+.lin{margin-top:clamp(38px,5vw,60px)}
+.lin__track{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.lin__track::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:rgba(11,9,8,.22)}
+.lin__n{position:relative;padding-top:26px;padding-right:14px}
+.lin__n::before{
+  content:"";position:absolute;left:0;top:0;width:11px;height:11px;
+  border:1px solid var(--ink);border-radius:50%;background:var(--paper);
+}
+.lin__n:last-child::before{background:var(--seal);border-color:var(--seal)}
+.lin__y{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;color:#8B8074;text-transform:uppercase}
+.lin__t{margin-top:8px;font-family:var(--f-disp);font-weight:300;font-size:clamp(15px,1.6vw,20px);line-height:1.3;letter-spacing:-.015em;color:var(--ink)}
+@media(max-width:820px){
+  .lin__track{grid-template-columns:1fr}
+  .lin__track::before{left:5px;right:auto;top:0;bottom:0;width:1px;height:auto}
+  .lin__n{padding:0 0 26px 30px}
+  .lin__n:last-child{padding-bottom:0}
+  .lin__n::before{top:4px}
+  .lin__t{margin-top:2px}
+}
+
+/* ── farm → table（コンセプトを写真2枚で言い切る） ──────────── */
+.dip{position:relative;width:100vw;margin-left:calc(50% - 50vw);display:grid;grid-template-columns:1fr 1fr}
+.dip__h{position:relative;overflow:hidden}
+.dip__h + .dip__h{border-left:2px solid var(--seal)}
+.dip__h img{width:100%;height:clamp(280px,42vw,600px);object-fit:cover}
+.dip__h figcaption{
+  position:absolute;left:0;right:0;bottom:clamp(22px,3vw,40px);text-align:center;
+  font-family:var(--f-disp);font-style:italic;font-weight:200;
+  font-size:clamp(26px,4.4vw,58px);line-height:1;letter-spacing:-.02em;
+  color:var(--paper);text-shadow:0 3px 30px rgba(0,0,0,.85);
+}
+.dip__h::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,5,4,.12) 0%,rgba(6,5,4,0) 38%,rgba(6,5,4,.78) 100%)}
+@media(max-width:700px){
+  .dip{grid-template-columns:1fr}
+  .dip__h + .dip__h{border-left:0;border-top:2px solid var(--seal)}
+  .dip__h img{height:clamp(230px,58vw,340px)}
+}
+
 /* ── motion ──────────────────────────────────────────────── */
 .rise{opacity:0;transform:translateY(20px);transition:opacity .9s cubic-bezier(.2,0,.2,1),transform .9s cubic-bezier(.2,0,.2,1)}
 .rise.is-in{opacity:1;transform:none}
@@ -431,11 +490,12 @@ h2.t{
 {%- endif %}
 
 <header class="head">
-  <a class="head__mark" href="#top">Farm to Table</a>
+  <a class="head__mark" href="#top" aria-label="Farm to Table"><img src="/{{ stores.logo_wordmark }}" width="996" height="276" alt="Farm to Table"></a>
   <div class="head__right">
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="zh">中文</button>
+      <button type="button" data-lang="zh">简体</button>
+      <button type="button" data-lang="zt">繁體</button>
       <button type="button" data-lang="ko">한국어</button>
     </div>
     {%- if store.tablecheck_url %}
@@ -456,20 +516,16 @@ h2.t{
   <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="hero__in wrap">
-    <p class="mk" aria-hidden="true">
-      <span class="mk__over">All-you-can-eat wagyu BBQ<br>by cattle farmers</span>
-      <span class="mk__cjk">畜牧农场主经营的和牛烤肉自助</span>
-      <span class="mk__word">Farm<span class="mk__mid"><span class="mk__seal"></span>to</span>Table</span>
-      <span class="mk__cjk">畜産農家の和牛焼肉食べ放題</span>
-      <span class="mk__est">est. 1962</span>
-    </p>
+    <p class="stamp" data-i18n="stamp_ayce">All you can eat</p>
+
+    <img class="mk" src="/{{ stores.logo_wordmark }}" width="996" height="276"
+         alt="Farm to Table" fetchpriority="high" decoding="async">
 
     <h1 class="hero__name">{{ store.name }}</h1>
 
     <div class="hero__cta">
       {%- if store.tablecheck_url %}
       <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
-      <p class="hero__note" data-i18n="resv_note">Reservations recommended</p>
       {%- else %}
       <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
       {%- endif %}
@@ -482,6 +538,16 @@ h2.t{
   <div class="hero__foot">
     <span>{{ store.area_label }}</span>
     {%- if store.hours %}<span>{{ store.hours }}</span>{% endif %}
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ NAME PLATE -->
+<section class="plate">
+  <div class="wrap plate__in">
+    <p class="plate__over">All-you-can-eat wagyu BBQ &nbsp;·&nbsp; by cattle farmers</p>
+    <p class="plate__cjk">畜牧农场主经营的和牛烤肉自助 &nbsp;·&nbsp; 畜産農家の和牛焼肉食べ放題</p>
+    <h2 class="plate__name">{{ store.name }}</h2>
+    <p class="plate__foot"><span>{{ store.area_label }} &nbsp;·&nbsp; est. 1962</span></p>
   </div>
 </section>
 
@@ -533,6 +599,50 @@ h2.t{
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════ LINEAGE -->
+<section class="sec sec--light" style="padding-top:0">
+  <div class="wrap">
+    <div class="in rise">
+      <p class="vlabel"><span data-i18n="lin_label">Our lineage</span></p>
+      <p class="hlabel" data-i18n="lin_label">Our lineage</p>
+      <h2 class="t" data-i18n="lin_title">From trading wagyu, to raising it.</h2>
+      <div class="lin">
+        <div class="lin__track">
+          <div class="lin__n">
+            <p class="lin__y">1962</p>
+            <p class="lin__t" data-i18n="lin_1">Wagyu trader</p>
+          </div>
+          <div class="lin__n">
+            <p class="lin__y">&nbsp;</p>
+            <p class="lin__t" data-i18n="lin_2">Meat wholesale</p>
+          </div>
+          <div class="lin__n">
+            <p class="lin__y">&nbsp;</p>
+            <p class="lin__t" data-i18n="lin_3">Butcher shop</p>
+          </div>
+          <div class="lin__n">
+            <p class="lin__y">&nbsp;</p>
+            <p class="lin__t" data-i18n="lin_4">Yakiniku restaurant</p>
+          </div>
+          <div class="lin__n">
+            <p class="lin__y" data-i18n="lin_now">Today</p>
+            <p class="lin__t" data-i18n="lin_5">Our own farm</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ BRAND MARK（版下をそのまま掲載） -->
+<section class="sec sec--light mark-plate" style="padding-block:clamp(20px,4vw,56px)">
+  <div class="wrap">
+    <img class="plate rise" src="/{{ stores.logo_illustration }}" width="1000" height="1000"
+         alt="Farm to Table — 畜産農家の和牛焼肉食べ放題 / 畜牧农场主经营的和牛烤肉自助 / est. 1962"
+         loading="lazy" decoding="async">
+  </div>
+</section>
+
 <!-- ══════════════════════════════════════════ STRENGTHS -->
 <section class="sec sec--light" style="padding-top:0">
   <div class="wrap">
@@ -574,6 +684,18 @@ h2.t{
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════ FARM → TABLE -->
+<section class="dip" aria-label="Farm to Table">
+  <figure class="dip__h">
+    <img src="/{{ store.farm_photo }}" alt="Farm to Table — farm" loading="lazy" decoding="async">
+    <figcaption>Farm</figcaption>
+  </figure>
+  <figure class="dip__h">
+    <img src="/{{ store.hero_photos[0] }}" alt="Farm to Table — table" loading="lazy" decoding="async">
+    <figcaption>Table</figcaption>
+  </figure>
+</section>
+
 <!-- ══════════════════════════════════════════ COURSES -->
 {%- if store.courses.length %}
 <section class="sec" id="menu">
@@ -588,8 +710,10 @@ h2.t{
         <li class="board__row{% if c.featured %} is-featured{% endif %}">
           <div class="board__head">
             <h3 class="board__name">{{ c.name }}</h3>
+            {%- if c.price %}
             <span class="board__lead" aria-hidden="true"></span>
             <p class="board__price">{{ c.price }}<small class="board__per" data-i18n="menu_per">per person</small></p>
+            {%- endif %}
           </div>
           {%- if c.name_jp or c.duration %}
           <p class="board__meta">{{ c.name_jp }}{% if c.name_jp and c.duration %} &nbsp;/&nbsp; {% endif %}{{ c.duration }}</p>
@@ -607,12 +731,12 @@ h2.t{
       <div class="drinks">
         <span class="drinks__k" data-i18n="menu_drinks">Free-flow drinks</span>
         <span class="drinks__n">{{ store.drinks.name_jp }}{% if store.drinks.duration %} / {{ store.drinks.duration }}{% endif %}</span>
-        <span class="drinks__p">{{ store.drinks.price }}</span>
+        {%- if store.drinks.price %}<span class="drinks__p">{{ store.drinks.price }}</span>{% endif %}
         {%- if store.drinks.note %}<span class="drinks__note">{{ store.drinks.note }}</span>{% endif %}
       </div>
       {%- endif %}
 
-      <p class="note" data-i18n="menu_note">Menu and prices may change. Please tell our staff about any allergies.</p>
+      <p class="note" data-i18n="menu_note">Menu may change. Please tell our staff about any allergies.</p>
 
       {%- if store.tablecheck_url %}
       <div class="after">
@@ -754,7 +878,7 @@ h2.t{
 <!-- ══════════════════════════════════════════ FOOTER -->
 <footer class="foot">
   <div class="wrap">
-    <p class="foot__mark">Farm to Table</p>
+    <img class="foot__mark" src="/{{ stores.logo_wordmark }}" width="996" height="276" alt="Farm to Table">
     <nav class="foot__links">
       {%- if store.tablecheck_url %}
       <a class="foot__a" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click">Reservation</a>
@@ -869,6 +993,7 @@ h2.t{
       banner:"Reservations recommended — seats fill up quickly",
       cta_reserve:"Reserve", cta_reserve_long:"Reserve a table", cta_reserve_online:"Reserve online",
       cta_call:"Call", cta_call_long:"Call to reserve", cta_directions:"Get directions",
+      stamp_ayce:"All you can eat",
       resv_note:"Reservations recommended",
       say_label:"Since 1962",
       say_quote:"We want you to enjoy truly delicious wagyu to your heart's content.",
@@ -889,9 +1014,12 @@ h2.t{
       str_2_d:"Built by visiting farms across the country, one producer at a time.",
       str_3_k:"Our own farm", str_3_t:"We raise it ourselves",
       str_3_d:"From raising to serving, in our own hands — caring for each animal.",
+      lin_label:"Our lineage", lin_title:"From trading wagyu, to raising it.",
+      lin_1:"Wagyu trader", lin_2:"Meat wholesale", lin_3:"Butcher shop",
+      lin_4:"Yakiniku restaurant", lin_5:"Our own farm", lin_now:"Today",
       menu_label:"All you can eat", menu_title:"Courses",
       menu_per:"per person", menu_drinks:"Free-flow drinks",
-      menu_note:"Menu and prices may change. Please tell our staff about any allergies.",
+      menu_note:"Menu may change. Please tell our staff about any allergies.",
       resv_label:"Reservations", resv_title:"Book your table",
       resv_body:"Seats fill up quickly, so we recommend reserving in advance. Booking takes about a minute.",
       gallery_label:"The restaurant",
@@ -904,6 +1032,7 @@ h2.t{
       banner:"建议提前订位 — 座位很快额满",
       cta_reserve:"订位", cta_reserve_long:"预订座位", cta_reserve_online:"在线订位",
       cta_call:"致电", cta_call_long:"致电订位", cta_directions:"查看地图",
+      stamp_ayce:"自助畅食 All you can eat",
       resv_note:"建议提前订位",
       say_label:"自1962年",
       say_quote:"希望您尽情享用真正美味的和牛。",
@@ -924,9 +1053,12 @@ h2.t{
       str_2_d:"走遍全国各地牧场，与生产者一位一位建立起来。",
       str_3_k:"自有牧场", str_3_t:"由我们亲手饲养",
       str_3_d:"从饲养到上桌，全由自己完成，对每一头牛精心照料。",
+      lin_label:"传承", lin_title:"从买卖和牛，到亲手饲养。",
+      lin_1:"和牛商人", lin_2:"肉品批发", lin_3:"精肉店",
+      lin_4:"烤肉店", lin_5:"自有牧场", lin_now:"现在",
       menu_label:"自助畅食", menu_title:"套餐",
       menu_per:"每位", menu_drinks:"无限畅饮",
-      menu_note:"内容与价格可能变更。如有食物过敏请告知店员。",
+      menu_note:"内容可能变更。如有食物过敏请告知店员。",
       resv_label:"订位", resv_title:"预订座位",
       resv_body:"座位很快额满，建议提前订位。预订大约只需一分钟。",
       gallery_label:"店内环境",
@@ -935,10 +1067,50 @@ h2.t{
       lbl_hours:"营业时间", lbl_tel:"电话", lbl_seats:"座位数",
       reviews_label:"Google 评分"
     },
+    zt: {
+      banner:"建議提前訂位 — 座位很快額滿",
+      cta_reserve:"訂位", cta_reserve_long:"預訂座位", cta_reserve_online:"線上訂位",
+      cta_call:"致電", cta_call_long:"致電訂位", cta_directions:"查看地圖",
+      stamp_ayce:"吃到飽 All you can eat",
+      resv_note:"建議提前訂位",
+      say_label:"自1962年",
+      say_quote:"希望您盡情享用真正美味的和牛。",
+      say_by:"Farm to Table — 自1962年的畜牧農場主",
+      story_label:"品牌故事",
+      story_title:"1962年，我們的歷史始於一位和牛商人。",
+      story_p1:"初代走遍全國拜訪生產者，親眼審視每一頭牛，始終只挑選真正優質的和牛。這份信念代代相傳，從肉品批發、精肉店，一路延伸到燒肉店。",
+      story_p2:"但僅僅是採購，並不能讓我們滿足。",
+      story_quote:"想把更美味的和牛送到您面前。",
+      story_p3:"我們的答案，是自己飼養和牛。我們從生產做起，對每一頭牛都精心照料，追求真正令自己信服的和牛。",
+      story_p4:"還有一件事，是我們一直想實現的——希望您盡情享用真正美味的和牛。因此，我們憑藉六十餘年累積的鑑別眼光、與生產者之間的信賴關係，以及自家飼養的優勢，打造了這個能讓您盡興品嚐和牛的吃到飽品牌。",
+      story_p5:"讓和牛更貼近生活。我們將生產者的心意與六十餘年傳承的技藝，融入每一道菜品之中。",
+      story_caption:"自有牧場",
+      lin_label:"傳承", lin_title:"從買賣和牛，到親手飼養。",
+      lin_1:"和牛商人", lin_2:"肉品批發", lin_3:"精肉店",
+      lin_4:"燒肉店", lin_5:"自有牧場", lin_now:"現在",
+      str_label:"我們的優勢", str_title:"由畜牧農場主經營的燒肉店。",
+      str_1_k:"六十餘年", str_1_t:"鑑別的眼光",
+      str_1_d:"自1962年累積至今，在業界代代相傳。",
+      str_2_k:"生產者", str_2_t:"信賴的關係",
+      str_2_d:"走遍全國各地牧場，與生產者一位一位建立起來。",
+      str_3_k:"自有牧場", str_3_t:"由我們親手飼養",
+      str_3_d:"從飼養到上桌，全由自己完成，對每一頭牛精心照料。",
+      menu_label:"吃到飽", menu_title:"套餐",
+      menu_per:"每位", menu_drinks:"暢飲",
+      menu_note:"內容可能變更。如有食物過敏請告知店員。",
+      resv_label:"訂位", resv_title:"預訂座位",
+      resv_body:"座位很快額滿，建議提前訂位。預訂大約只需一分鐘。",
+      gallery_label:"店內環境",
+      access_label:"交通", access_title:"店鋪位於",
+      lbl_name:"店名", lbl_address:"地址", lbl_station:"最近車站",
+      lbl_hours:"營業時間", lbl_tel:"電話", lbl_seats:"座位數",
+      reviews_label:"Google 評分"
+    },
     ko: {
       banner:"예약을 권장합니다 — 좌석이 빨리 찹니다",
       cta_reserve:"예약", cta_reserve_long:"좌석 예약하기", cta_reserve_online:"온라인 예약",
       cta_call:"전화", cta_call_long:"전화로 예약", cta_directions:"지도 보기",
+      stamp_ayce:"무한리필 All you can eat",
       resv_note:"예약을 권장합니다",
       say_label:"1962년부터",
       say_quote:"정말 맛있는 와규를 마음껏 즐기시기 바랍니다.",
@@ -959,9 +1131,12 @@ h2.t{
       str_2_d:"전국의 목장을 찾아다니며 한 분 한 분과 쌓아 왔습니다.",
       str_3_k:"자체 목장", str_3_t:"직접 키웁니다",
       str_3_d:"사육부터 제공까지 저희 손으로, 한 마리 한 마리에 정성을 들입니다.",
+      lin_label:"계보", lin_title:"와규를 사고팔던 데서, 직접 키우기까지.",
+      lin_1:"와규 상인", lin_2:"정육 도매", lin_3:"정육점",
+      lin_4:"야키니쿠 가게", lin_5:"자체 목장", lin_now:"현재",
       menu_label:"무한리필", menu_title:"코스",
       menu_per:"1인", menu_drinks:"무한 음료",
-      menu_note:"내용과 가격은 변경될 수 있습니다. 알레르기가 있으시면 직원에게 알려주세요.",
+      menu_note:"내용은 변경될 수 있습니다. 알레르기가 있으시면 직원에게 알려주세요.",
       resv_label:"예약", resv_title:"좌석 예약하기",
       resv_body:"좌석이 빨리 차기 때문에 미리 예약하시기를 권장합니다. 예약은 1분 정도면 완료됩니다.",
       gallery_label:"매장 내부",
@@ -978,7 +1153,7 @@ h2.t{
       var key = el.getAttribute('data-i18n');
       if (dict[key] !== undefined) el.innerHTML = dict[key];
     });
-    var HTMLLANG = { en:"en", zh:"zh-Hans", ko:"ko" };
+    var HTMLLANG = { en:"en", zh:"zh-Hans", zt:"zh-Hant", ko:"ko" };
     document.documentElement.setAttribute('lang', HTMLLANG[lang] || 'en');
     document.querySelectorAll('.lang button').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
@@ -996,8 +1171,12 @@ h2.t{
     try { saved = localStorage.getItem('preferred_lang'); } catch (e) {}
     if (saved && translations[saved]) { if (saved !== 'en') applyLanguage(saved); return; }
     var n = (navigator.language || 'en').toLowerCase();
-    if (n.indexOf('ko') === 0) applyLanguage('ko');
-    else if (n.indexOf('zh') === 0) applyLanguage('zh');
+    if (n.indexOf('ko') === 0) { applyLanguage('ko'); return; }
+    if (n.indexOf('zh') === 0) {
+      // 台湾・香港・マカオは繁体字、それ以外は簡体字
+      var hant = n.indexOf('tw') > -1 || n.indexOf('hk') > -1 || n.indexOf('mo') > -1 || n.indexOf('hant') > -1;
+      applyLanguage(hant ? 'zt' : 'zh');
+    }
   })();
 </script>
 </body>

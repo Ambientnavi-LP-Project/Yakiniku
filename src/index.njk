@@ -3,24 +3,22 @@ permalink: "/index.html"
 ---
 {%- set main = stores.stores[0] -%}
 {%- set to = "/" + main.region + "/" + main.slug + "/" -%}
+{#-
+  トップページ。通常は vercel.json の redirects がサーバー側で転送するため、
+  このファイルは表示されません（ローカル確認時などの保険）。
+  画面には何も出さず、即座に転送します。
+-#}
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ stores.brand }}</title>
 <meta name="robots" content="noindex">
+<title>{{ stores.brand }}</title>
 <link rel="canonical" href="{{ stores.domain }}{{ to }}">
+<script>location.replace("{{ to }}");</script>
 <meta http-equiv="refresh" content="0; url={{ to }}">
-<style>
-  html,body{height:100%}
-  body{margin:0;display:grid;place-items:center;background:#17130F;color:#F4EEDF;
-       font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.2em}
-  a{color:#E8B32C}
-</style>
+<style>html,body{margin:0;height:100%;background:#0B0908}</style>
 </head>
-<body>
-  <p>REDIRECTING &nbsp;→&nbsp; <a href="{{ to }}">{{ to }}</a></p>
-  <script>location.replace("{{ to }}");</script>
-</body>
+<body><a href="{{ to }}" style="position:absolute;left:-9999px">{{ stores.brand }}</a></body>
 </html>
