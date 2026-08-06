@@ -1,0 +1,26 @@
+---
+permalink: "/index.html"
+---
+{%- set main = stores.stores[0] -%}
+{%- set to = "/" + main.region + "/" + main.slug + "/" -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ stores.brand }}</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="{{ stores.domain }}{{ to }}">
+<meta http-equiv="refresh" content="0; url={{ to }}">
+<style>
+  html,body{height:100%}
+  body{margin:0;display:grid;place-items:center;background:#17130F;color:#F4EEDF;
+       font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.2em}
+  a{color:#E8B32C}
+</style>
+</head>
+<body>
+  <p>REDIRECTING &nbsp;→&nbsp; <a href="{{ to }}">{{ to }}</a></p>
+  <script>location.replace("{{ to }}");</script>
+</body>
+</html>

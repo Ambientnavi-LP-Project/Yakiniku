@@ -1,0 +1,15 @@
+{
+  "name": "farm-to-table",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Farm to Table — Wagyu Yakiniku all-you-can-eat, store landing pages",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "dev": "eleventy --serve"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
