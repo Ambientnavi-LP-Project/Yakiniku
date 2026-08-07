@@ -136,7 +136,7 @@ const stores = [
     city: "Osaka",
 
     // --- 最上部の帯（クリックで予約ページへ飛びます） ---
-    banner: "Reservations recommended — seats fill up quickly",
+    banner: "", // 最上部の帯。空 "" で非表示（いまは出していません）
 
     // --- 住所・最寄り駅 ---
     address_jp: "〒542-0084 大阪府大阪市中央区宗右衛門町3-5 金田ビル 2F",
