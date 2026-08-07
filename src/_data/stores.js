@@ -169,15 +169,15 @@ const stores = [
     // --- 写真 ---
     //     ★ 現在はすべて仮画像です。同じファイル名でアップロードすると差し替わります
     hero_photos: [
-      "assets/wagyu-01.jpg",
-      "assets/interior-01.jpg",
-      "assets/interior-02.jpg",
+      "assets/hero-01.jpg", // 盛り合わせの引き
+      "assets/hero-02.jpg", // 夜・道頓堀を望む席
+      "assets/hero-03.jpg", // 炭火の上の一枚
     ],
     gallery: [
-      { src: "assets/interior-01.jpg", caption: "Window seats" },
+      { src: "assets/guests-01.jpg", caption: "Window seats" },
       { src: "assets/interior-02.jpg", caption: "Booth seating" },
       { src: "assets/interior-03.jpg", caption: "Dining room" },
-      { src: "assets/wagyu-01.jpg", caption: "Wagyu" },
+      { src: "assets/interior-01.jpg", caption: "Over Dotonbori" },
     ],
     farm_photo: "assets/farm-01.jpg",     // ストーリー欄（牧場の牛）
     farmer_photo: "assets/farm-02.jpg",   // 強み欄（生産者と牛）
