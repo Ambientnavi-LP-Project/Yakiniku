@@ -79,7 +79,7 @@
 // ============================================================================
 
 // --- サイト全体の設定 --------------------------------------------------------
-const domain = "https://farm-to-table.example.com"; // ★仮。独自ドメインを設定したら書き換える
+const domain = "https://japanese-bbq-yakiniku.halal-food-wagyu.com"; // 末尾のスラッシュは付けない
 const brand = "Farm to Table";
 const founded = "1962";
 const og_image = "assets/og.jpg";
@@ -139,8 +139,8 @@ const stores = [
     banner: "", // 最上部の帯。空 "" で非表示（いまは出していません）
 
     // --- 住所・最寄り駅 ---
-    address_jp: "〒542-0084 大阪府大阪市中央区宗右衛門町3-5 金田ビル 2F",
-    address_en: "Kaneda Bldg. 2F, 3-5 Soemoncho, Chuo-ku, Osaka 542-0084, Japan",
+    address_jp: "〒542-0084 大阪府大阪市中央区宗右衛門町3-4 2F",
+    address_en: "2F, 3-4 Soemoncho, Chuo-ku, Osaka 542-0084, Japan",
     station_en: "", // 最寄り駅。記入すると行が出ます
     station_note: "",
 
@@ -151,8 +151,8 @@ const stores = [
     seats: "",
 
     // --- 電話番号 ---
-    tel_display: "080-8221-9371",
-    tel_raw: "818082219371",
+    tel_display: "080-2280-7302",
+    tel_raw: "818022807302",
 
     // --- リンク ---
     reserve_system: "tablecheck",
@@ -167,7 +167,7 @@ const stores = [
     google_reviews_url: "",
 
     // --- 写真 ---
-    //     ★ 現在はすべて仮画像です。同じファイル名でアップロードすると差し替わります
+    //     いただいた実写真を使っています。差し替えるときは同じファイル名で assets/ に置く
     hero_photos: [
       "assets/hero-01.jpg", // 盛り合わせの引き
       "assets/hero-02.jpg", // 夜・道頓堀を望む席
@@ -183,7 +183,7 @@ const stores = [
     farmer_photo: "assets/farm-02.jpg",   // 強み欄（生産者と牛）
 
     // --- 食べ放題コース ---
-    //     ★★ コース名・金額・内容はすべて仮です。確定したら必ず書き換えてください ★★
+    //     ★★ コース名・内容は仮です。確定したら書き換えてください ★★
     //     courses を空 [] にすると、コース欄がまるごと消えます
     //     featured: true にすると、そのコースが目立つ表示になります（1つだけ推奨）
     courses: [

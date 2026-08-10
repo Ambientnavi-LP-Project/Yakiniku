@@ -394,11 +394,12 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
 .rise[data-d="2"]{transition-delay:.18s}
 .rise[data-d="3"]{transition-delay:.27s}
 /* 画像は下から拭き上げるように出す */
-.wipe{clip-path:inset(0 0 100% 0);transition:clip-path 1.15s cubic-bezier(.16,1,.3,1)}
-.wipe.is-in{clip-path:inset(0 0 0 0)}
+.wipe > img{clip-path:inset(0 0 100% 0);transition:clip-path 1.15s cubic-bezier(.16,1,.3,1)}
+.wipe.is-in > img{clip-path:inset(0 0 0 0)}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-  .rise,.wipe{opacity:1;transform:none;clip-path:none}
+  .rise{opacity:1;transform:none}
+  .wipe > img{clip-path:none}
 }
 </style>
 </head>
@@ -499,8 +500,8 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
     </div>
   </div>
 
-  <figure class="bleed">
-    <img class="wipe" src="/{{ store.farm_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
+  <figure class="bleed wipe">
+    <img src="/{{ store.farm_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
     <figcaption data-i18n="story_caption">Our own farm</figcaption>
   </figure>
 
@@ -534,8 +535,8 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
       <p class="vlabel"><span data-i18n="str_label">Our strengths</span></p>
       <p class="hlabel" data-i18n="str_label">Our strengths</p>
       <div class="str">
-        <figure class="str__fig">
-          <img class="wipe" src="/{{ store.farmer_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
+        <figure class="str__fig wipe">
+          <img src="/{{ store.farmer_photo }}" alt="Farm to Table — {{ store.name_short }}" loading="lazy" decoding="async">
         </figure>
         <div>
           <h2 class="t" style="margin-bottom:clamp(30px,4vw,52px)" data-i18n="str_title">A yakiniku restaurant run by cattle farmers.</h2>
@@ -580,8 +581,8 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
       <h2 class="t rise" data-i18n="wagyu_title">Wagyu, closer to everyone.</h2>
       <p class="lede rise" data-d="1" style="margin-top:26px" data-i18n="story_p5">We put the dedication of our producers and more than 60 years of craft into every plate.</p>
       <div class="duo">
-        <figure><img class="wipe" src="/assets/dish-01.jpg" alt="{{ store.name_short }} — wagyu" loading="lazy" decoding="async"></figure>
-        <figure><img class="wipe" src="/assets/dish-02.jpg" alt="{{ store.name_short }} — wagyu" loading="lazy" decoding="async"></figure>
+        <figure class="wipe"><img src="/assets/dish-01.jpg" alt="{{ store.name_short }} — wagyu" loading="lazy" decoding="async"></figure>
+        <figure class="wipe"><img src="/assets/dish-02.jpg" alt="{{ store.name_short }} — wagyu" loading="lazy" decoding="async"></figure>
       </div>
     </div>
   </div>
@@ -674,7 +675,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
       <h2 class="t rise">{{ store.city }}</h2>
       <div class="grid">
         {%- for g in store.gallery %}
-        <figure class="shot"><img class="wipe" src="/{{ g.src }}" alt="{{ store.name_short }} — {{ g.caption }}" loading="lazy" decoding="async">
+        <figure class="shot wipe"><img src="/{{ g.src }}" alt="{{ store.name_short }} — {{ g.caption }}" loading="lazy" decoding="async">
         {%- if g.caption %}<figcaption>{{ g.caption }}</figcaption>{% endif %}</figure>
         {%- endfor %}
       </div>
@@ -848,6 +849,29 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); } });
     },{rootMargin:'0px 0px -8% 0px',threshold:.04});
     items.forEach(function(el){ io.observe(el); });
+
+    /* 保険：勢いよくスクロールすると observer が取りこぼすことがあるため、
+       スクロールのたびに「画面に入った／通り過ぎた」ものを必ず表示する。
+       これが無いと、速く送った箇所の写真が出ないまま残る。 */
+    var pending=[].slice.call(items), sweeping=false;
+    function sweep(){
+      var vh=innerHeight;
+      pending=pending.filter(function(el){
+        if(el.classList.contains('is-in')) return false;
+        if(el.getBoundingClientRect().top < vh*0.95){ el.classList.add('is-in'); return false; }
+        return true;
+      });
+      sweeping=false;
+      if(!pending.length){
+        removeEventListener('scroll',onSweep);
+        removeEventListener('resize',onSweep);
+      }
+    }
+    function onSweep(){ if(!sweeping){ sweeping=true; requestAnimationFrame(sweep); } }
+    addEventListener('scroll',onSweep,{passive:true});
+    addEventListener('resize',onSweep);
+    addEventListener('load',onSweep);
+    setTimeout(sweep,1200);
   }
   var yr=document.getElementById('yr'); if(yr) yr.textContent=new Date().getFullYear();
 })();
