@@ -304,6 +304,15 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
 .board__price{font-family:var(--f-mono);font-size:clamp(17px,2.1vw,21px);line-height:1;white-space:nowrap}
 .board__per{display:block;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--stone);margin-top:9px;text-align:right}
 .board__meta{margin-top:11px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;color:#9A8F7E}
+.board__optk{margin-top:18px;font-family:var(--f-mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--stone)}
+.board__opts{margin-top:11px;display:flex;flex-wrap:wrap;gap:9px}
+.board__opts li{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--hair);padding:9px 15px;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:#CFC5B4;
+}
+.board__opts li::before{content:"+";color:var(--seal);font-size:12px;line-height:1}
 .board__items{margin-top:14px;display:flex;flex-wrap:wrap;gap:5px 9px;max-width:72ch}
 .board__items li{font-size:13.5px;color:#BFB4A2;line-height:1.7}
 .board__items li:not(:last-child)::after{content:"/";margin-left:9px;color:rgba(246,239,221,.25)}
@@ -613,6 +622,13 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
           {%- endif %}
           {%- if c.items.length %}
           <ul class="board__items">{% for i in c.items %}<li>{{ i }}</li>{% endfor %}</ul>
+          {%- endif %}
+          {%- if c.soft_drinks or c.alcohol %}
+          <p class="board__optk" data-i18n="menu_options">Free-flow drink options</p>
+          <ul class="board__opts">
+            {%- if c.soft_drinks %}<li data-i18n="opt_soft">Soft drinks</li>{% endif %}
+            {%- if c.alcohol %}<li data-i18n="opt_alcohol">Alcohol</li>{% endif %}
+          </ul>
           {%- endif %}
         </li>
         {%- endfor %}
@@ -946,6 +962,7 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       wagyu_label:"The wagyu", wagyu_title:"Wagyu, closer to everyone.",
       menu_label:"All you can eat", menu_title:"Courses",
       menu_per:"per person", menu_drinks:"Free-flow drinks",
+      menu_options:"Free-flow drink options", opt_soft:"Soft drinks", opt_alcohol:"Alcohol",
       menu_note:"Menu may change. Please tell our staff about any allergies.",
       resv_label:"Reservations", resv_title:"Book your table",
       resv_body:"Seats fill up quickly, so we recommend reserving in advance. Booking takes about a minute.",
@@ -983,6 +1000,7 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       wagyu_label:"和牛", wagyu_title:"让和牛更贴近生活。",
       menu_label:"自助畅食", menu_title:"套餐",
       menu_per:"每位", menu_drinks:"无限畅饮",
+      menu_options:"可加购的无限畅饮", opt_soft:"软饮畅饮", opt_alcohol:"酒水畅饮",
       menu_note:"内容可能变更。如有食物过敏请告知店员。",
       resv_label:"订位", resv_title:"预订座位",
       resv_body:"座位很快额满，建议提前订位。预订大约只需一分钟。",
@@ -1020,6 +1038,7 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       wagyu_label:"和牛", wagyu_title:"讓和牛更貼近生活。",
       menu_label:"吃到飽", menu_title:"套餐",
       menu_per:"每位", menu_drinks:"暢飲",
+      menu_options:"可加購的暢飲", opt_soft:"軟性飲料暢飲", opt_alcohol:"酒類暢飲",
       menu_note:"內容可能變更。如有食物過敏請告知店員。",
       resv_label:"訂位", resv_title:"預訂座位",
       resv_body:"座位很快額滿，建議提前訂位。預訂大約只需一分鐘。",
@@ -1057,6 +1076,7 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       wagyu_label:"와규", wagyu_title:"와규를 더 가깝게.",
       menu_label:"무한리필", menu_title:"코스",
       menu_per:"1인", menu_drinks:"무한 음료",
+      menu_options:"무한리필 음료 선택", opt_soft:"소프트드링크", opt_alcohol:"주류",
       menu_note:"내용은 변경될 수 있습니다. 알레르기가 있으시면 직원에게 알려주세요.",
       resv_label:"예약", resv_title:"좌석 예약하기",
       resv_body:"좌석이 빨리 차기 때문에 미리 예약하시기를 권장합니다. 예약은 1분 정도면 완료됩니다.",

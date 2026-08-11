@@ -183,32 +183,30 @@ const stores = [
     farmer_photo: "assets/farm-02.jpg",   // 強み欄（生産者と牛）
 
     // --- 食べ放題コース ---
-    //     ★★ コース名・内容は仮です。確定したら書き換えてください ★★
-    //     courses を空 [] にすると、コース欄がまるごと消えます
+    //     金額は現在すべて非表示です（price が空 "" のため）。
+    //     出したくなったら price に "¥4,980" のように入れるだけで表示されます。
+    //     soft_drinks / alcohol を true にすると、そのコースで選べる飲み放題として出ます。
     //     featured: true にすると、そのコースが目立つ表示になります（1つだけ推奨）
+    //     courses を空 [] にすると、コース欄がまるごと消えます。
     courses: [
       {
-        name: "Course A",
-        name_jp: "コースA",
-        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
-        duration: "",
+        name: "Wagyu Course",
+        name_jp: "和牛焼肉食べ放題",
+        price: "", // 空 "" なら金額を表示しません
+        duration: "", // 例 "100 min"。空なら出ません
         featured: false,
-        items: [],
+        soft_drinks: true, // ソフトドリンク飲み放題あり
+        alcohol: true, // アルコール飲み放題あり
+        items: [], // 内容を出したくなったら "上カルビ / Premium short rib" のように行を足す
       },
       {
-        name: "Course B",
-        name_jp: "コースB",
-        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
-        duration: "",
-        featured: true,
-        items: [],
-      },
-      {
-        name: "Course C",
-        name_jp: "コースC",
-        price: "", // 空 "" なら金額を表示しません。出したくなったら "¥4,980" のように入れる
+        name: "Kobe Beef Course",
+        name_jp: "神戸牛焼肉食べ放題",
+        price: "",
         duration: "",
         featured: false,
+        soft_drinks: true,
+        alcohol: true,
         items: [],
       },
     ],
