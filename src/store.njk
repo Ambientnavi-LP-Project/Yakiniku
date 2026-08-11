@@ -8,7 +8,9 @@ permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
 {#- 社内名称: {{ store.internal_name }} -#}
 {%- set desc = "All-you-can-eat wagyu yakiniku BBQ in " + store.city + ". Run by cattle farmers since 1962 — we raise our own wagyu. " + store.name -%}
 {%- set canonical = stores.domain + "/" + store.region + "/" + store.slug + "/" -%}
-{%- set reserve = store.tablecheck_url + "?utm_source=lp&utm_medium=referral" -%}
+{#- 予約リンク。TableCheck 側で「公式サイト経由」と、どのボタンから来たかが分かるようにする -#}
+{%- set utm = "?utm_source=official-site&utm_medium=website&utm_campaign=" + store.region + "-" + store.slug -%}
+{%- set reserve = store.tablecheck_url + utm -%}
 <!doctype html>
 <html lang="en" data-store="{{ store.region }}-{{ store.slug }}">
 <head>
@@ -439,7 +441,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
       <button type="button" data-lang="ko">한국어</button>
     </div>
     {%- if store.tablecheck_url %}
-    <a class="btn btn--fill btn--sm" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve</a>
+    <a class="btn btn--fill btn--sm" href="{{ reserve }}&utm_content=header" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve">Reserve</a>
     {%- else %}
     <a class="btn btn--fill btn--sm" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call</a>
     {%- endif %}
@@ -463,7 +465,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
     <h1 class="hero__name rise" data-d="2">{{ store.name }}</h1>
     <div class="hero__cta rise" data-d="3">
       {%- if store.tablecheck_url %}
-      <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+      <a class="btn btn--fill" href="{{ reserve }}&utm_content=hero" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
       {%- else %}
       <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
       {%- endif %}
@@ -647,7 +649,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
 
       {%- if store.tablecheck_url %}
       <div class="after rise">
-        <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+        <a class="btn btn--fill" href="{{ reserve }}&utm_content=menu" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
         <p data-i18n="resv_note">Reservations recommended</p>
       </div>
       {%- endif %}
@@ -668,7 +670,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
       <p class="resv__d" data-i18n="resv_body">Seats fill up quickly, so we recommend reserving in advance. Booking takes about a minute.</p>
       <div class="resv__cta">
         {%- if store.tablecheck_url %}
-        <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_online">Reserve online</a>
+        <a class="btn btn--fill" href="{{ reserve }}&utm_content=reserve-section" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_online">Reserve online</a>
         {%- endif %}
         {%- if store.tel_display %}
         <a class="btn btn--line" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
@@ -743,7 +745,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
 
           <div class="acc__cta">
             {%- if store.tablecheck_url %}
-            <a class="btn btn--fill" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+            <a class="btn btn--fill" href="{{ reserve }}&utm_content=access" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
             {%- else %}
             <a class="btn btn--fill" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call_long">Call to reserve</a>
             {%- endif %}
@@ -765,7 +767,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
   <div class="wrap">
     <img class="foot__mark" src="/{{ stores.logo_wordmark }}" width="996" height="276" alt="Farm to Table">
     <nav class="foot__links">
-      {%- if store.tablecheck_url %}<a class="foot__a" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click">Reservation</a>{% endif %}
+      {%- if store.tablecheck_url %}<a class="foot__a" href="{{ reserve }}&utm_content=footer" target="_blank" rel="noopener" data-ga-event="reserve_click">Reservation</a>{% endif %}
       {%- if store.tel_display %}<a class="foot__a" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click">Call</a>{% endif %}
       {%- if store.maps_link %}<a class="foot__a" href="{{ store.maps_link }}" target="_blank" rel="noopener" data-ga-event="map_click">Maps</a>{% endif %}
       {%- if store.instagram_url %}<a class="foot__a" href="{{ store.instagram_url }}" target="_blank" rel="noopener" data-ga-event="outbound_click">Instagram</a>{% endif %}
@@ -779,7 +781,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
 
 <nav class="dock" aria-label="Reserve">
   {%- if store.tablecheck_url %}
-  <a class="dock__r" href="{{ reserve }}" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
+  <a class="dock__r" href="{{ reserve }}&utm_content=dock" target="_blank" rel="noopener" data-ga-event="reserve_click" data-i18n="cta_reserve_long">Reserve a table</a>
   {%- endif %}
   {%- if store.tel_display %}
   <a class="dock__t" href="tel:+{{ store.tel_raw }}" data-ga-event="tel_click" data-i18n="cta_call">Call</a>
@@ -1088,6 +1090,24 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
   };
 
+  /* TableCheck のロケール（URL の /ja/ の部分）を、いま表示している言語に合わせて差し替える。
+     日本語の予約画面に飛ばすと、外国語の来店客がそこで離脱するため。
+
+     ★公開前に、下の4つのURLをブラウザで開いて表示されるか確認してください。
+       もし開かないロケールがあれば、その行の値を "ja" に戻せば日本語の予約画面に飛びます。
+       この仕組み自体を使わない場合は、下の行をすべて "ja" にしてください。
+         https://www.tablecheck.com/en/wagyu-yakiniku-nipponbashi/reserve
+         https://www.tablecheck.com/zh-CN/wagyu-yakiniku-nipponbashi/reserve
+         https://www.tablecheck.com/zh-TW/wagyu-yakiniku-nipponbashi/reserve
+         https://www.tablecheck.com/ko/wagyu-yakiniku-nipponbashi/reserve */
+  var TC_LOCALE = { en:"en", zh:"zh-CN", zt:"zh-TW", ko:"ko" };
+  function syncReserveLocale(lang){
+    var loc = TC_LOCALE[lang] || "en";
+    document.querySelectorAll('a[href*="tablecheck.com/"]').forEach(function(a){
+      a.href = a.href.replace(/tablecheck\.com\/[a-zA-Z-]+\//, 'tablecheck.com/' + loc + '/');
+    });
+  }
+
   function applyLanguage(lang){
     var dict = translations[lang] || translations.en;
     document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -1099,6 +1119,7 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.querySelectorAll('.lang button').forEach(function(b){
       b.classList.toggle('active', b.getAttribute('data-lang') === lang);
     });
+    syncReserveLocale(lang);
     try { localStorage.setItem('preferred_lang', lang); } catch(e){}
     document.dispatchEvent(new Event('langchange'));
   }
@@ -1106,6 +1127,8 @@ var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('.lang button').forEach(function(b){
     b.addEventListener('click', function(){ applyLanguage(b.getAttribute('data-lang')); });
   });
+
+  syncReserveLocale('en');
 
   (function initLang(){
     var saved=null;

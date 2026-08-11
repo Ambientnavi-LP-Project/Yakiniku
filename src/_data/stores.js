@@ -156,7 +156,9 @@ const stores = [
 
     // --- リンク ---
     reserve_system: "tablecheck",
-    tablecheck_url: "https://www.tablecheck.com/shops/5wnipponbashi/reserve",
+    // ロケール（/ja/ の部分）はコード側で表示言語に合わせて自動で差し替えます。
+    // ここには /ja/ のまま貼っておいてください。
+    tablecheck_url: "https://www.tablecheck.com/ja/wagyu-yakiniku-nipponbashi/reserve",
     maps_link: "", // ★要記入
     maps_embed: "", // ★要記入。空なら地図が出ず、アクセス欄が1カラムに寄ります
     instagram_url: "",
