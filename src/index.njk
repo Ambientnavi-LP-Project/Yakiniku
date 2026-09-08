@@ -16,8 +16,8 @@ permalink: "/index.html"
 <meta name="robots" content="noindex">
 <title>{{ stores.brand }}</title>
 <link rel="canonical" href="{{ stores.domain }}{{ to }}">
-<script>location.replace("{{ to }}");</script>
-<meta http-equiv="refresh" content="0; url={{ to }}">
+<script>location.replace("{{ to }}"+location.search+location.hash);</script>
+<noscript><meta http-equiv="refresh" content="0; url={{ to }}"></noscript>
 <style>html,body{margin:0;height:100%;background:#0B0908}</style>
 </head>
 <body><a href="{{ to }}" style="position:absolute;left:-9999px">{{ stores.brand }}</a></body>
