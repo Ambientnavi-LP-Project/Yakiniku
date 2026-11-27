@@ -139,7 +139,7 @@ const stores = [
     banner: "", // 最上部の帯。空 "" で非表示（いまは出していません）
 
     // --- 住所・最寄り駅 ---
-    address_jp: "〒542-0084 大阪府大阪市中央区宗右衛門町3-4 2F",
+    address_jp: "〒542-0084 大阪府大阪市中央区宗右衛門町３−４ 2F",
     address_en: "2F, 3-4 Soemoncho, Chuo-ku, Osaka 542-0084, Japan",
     station_en: "", // 最寄り駅。記入すると行が出ます
     station_note: "",
@@ -158,7 +158,7 @@ const stores = [
     reserve_system: "tablecheck",
     // ロケール（/ja/ の部分）はコード側で表示言語に合わせて自動で差し替えます。
     // ここには /ja/ のまま貼っておいてください。
-    tablecheck_url: "https://www.tablecheck.com/ja/wagyu-yakiniku-nipponbashi/reserve",
+    tablecheck_url: "",
     maps_link: "https://maps.app.goo.gl/fMNHLi2w4oskni6Q9",
     maps_embed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d797.9220455923532!2d135.5041388400387!3d34.669381613237995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7fc7e5eada3%3A0x495f6f70d66e7141!2zRmFybSB0byBUYWJsZSDlkozniZvng6fogonoh6rliqkgV2FneXUgWWFraW5pa3UgQkJRIEFsbC1Zb3UtQ2FuLUVhdCBEb3RvbmJvcmkgUmVzdGF1cmFudA!5e0!3m2!1sja!2sjp!4v1788766198190!5m2!1sja!2sjp",
     instagram_url: "",
