@@ -6,7 +6,7 @@ pagination:
 permalink: "/{{ store.region }}/{{ store.slug }}/index.html"
 ---
 {#- 社内名称: {{ store.internal_name }} -#}
-{%- set desc = "All-you-can-eat wagyu yakiniku BBQ in " + store.city + ". Run by cattle farmers since 1962 — we raise our own wagyu. " + store.name -%}
+{%- set desc = "All-you-can-eat wagyu yakiniku BBQ in " + store.city + ". Run by cattle farmers — we raise our own wagyu. " + store.name -%}
 {%- set canonical = stores.domain + "/" + store.region + "/" + store.slug + "/" -%}
 {#- 予約リンク。TableCheck 側で「公式サイト経由」と、どのボタンから来たかが分かるようにする -#}
 {%- set utm = "?utm_source=official-site&utm_medium=website&utm_campaign=" + store.region + "-" + store.slug -%}
@@ -487,14 +487,21 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
   <div class="px__scrim" aria-hidden="true"></div>
   <div class="wrap say__in">
     <div class="in rise">
+      <template data-hidden="1962">
       <p class="vlabel"><span data-i18n="say_label">Since 1962</span></p>
+      </template>
+      <template data-hidden="1962">
       <p class="hlabel" data-i18n="say_label">Since 1962</p>
+      </template>
       <q data-i18n="say_quote">We want you to enjoy truly delicious wagyu to your heart's content.</q>
+      <template data-hidden="1962">
       <p class="say__by" data-i18n="say_by">Farm to Table — cattle farmers since 1962</p>
+      </template>
     </div>
   </div>
 </section>
 
+<template data-hidden="1962">
 <!-- ══════════════════════════════════════════ STORY -->
 <section class="sec sec--light" id="story">
   <div class="wrap">
@@ -529,12 +536,13 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
     </div>
   </div>
 </section>
+</template>
 
 <!-- ══════════════════════════════════════════ BRAND MARK -->
 <section class="sec sec--light" style="padding-block:clamp(20px,4vw,56px)">
   <div class="wrap">
     <img class="plate rise" src="/{{ stores.logo_illustration }}" width="1000" height="1000"
-         alt="Farm to Table — 畜産農家の和牛焼肉食べ放題 / 畜牧农场主经营的和牛烤肉自助 / est. 1962"
+         alt="Farm to Table — 畜産農家の和牛焼肉食べ放題 / 畜牧农场主经营的和牛烤肉自助"
          loading="lazy" decoding="async">
   </div>
 </section>
@@ -557,7 +565,9 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
               <p class="str__k" data-i18n="str_1_k">Over 60 years</p>
               <div>
                 <p class="str__t" data-i18n="str_1_t">An eye for quality</p>
+                <template data-hidden="1962">
                 <p class="str__d" data-i18n="str_1_d">Cultivated since 1962 and handed down through the trade.</p>
+                </template>
               </div>
             </div>
             <div class="str__row">
@@ -625,11 +635,11 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
           {%- if c.items.length %}
           <ul class="board__items">{% for i in c.items %}<li>{{ i }}</li>{% endfor %}</ul>
           {%- endif %}
-          {%- if c.soft_drinks or c.alcohol %}
+          {%- if c.soft_drinks %}{# hidden:alcohol — 元は「c.soft_drinks or c.alcohol」 #}
           <p class="board__optk" data-i18n="menu_options">Free-flow drink options</p>
           <ul class="board__opts">
             {%- if c.soft_drinks %}<li data-i18n="opt_soft">Soft drinks</li>{% endif %}
-            {%- if c.alcohol %}<li data-i18n="opt_alcohol">Alcohol</li>{% endif %}
+            <template data-hidden="alcohol">{%- if c.alcohol %}<li data-i18n="opt_alcohol">Alcohol</li>{% endif %}</template>
           </ul>
           {%- endif %}
         </li>
@@ -774,7 +784,7 @@ h2.t{font-family:var(--f-disp);font-optical-sizing:auto;font-weight:300;
     </nav>
     <p class="foot__legal">
       <span class="foot__name">{{ store.name }}</span>
-      © {{ stores.founded }}–<span id="yr">2026</span> {{ stores.brand }}
+      © <template data-hidden="1962">{{ stores.founded }}–</template><span id="yr">2026</span> {{ stores.brand }}
     </p>
   </div>
 </footer>
